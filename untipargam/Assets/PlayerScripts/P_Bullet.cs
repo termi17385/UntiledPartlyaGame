@@ -13,8 +13,9 @@ namespace Player
         private Rigidbody rb;
         private int bulletVelocity = 100;
         private float spawnTime, deathTime;
-        //[SerializeField] private ParticleSystem ParticlePuff;
-        
+
+        private float die;
+
         private void Awake()
         {
             rb = GetComponent<Rigidbody>();
@@ -23,6 +24,7 @@ namespace Player
         void Start()
         {
             deathTime = Time.time + 3;
+            die = UnityEngine.Random.Range(0, 0.2f);
             rb.velocity = transform.forward * bulletVelocity;
         }
 
@@ -37,15 +39,13 @@ namespace Player
         {
 			if (other.transform.GetComponent<HealthManager>())
 				other.transform.GetComponent<HealthManager>().ChangeHP(-1);
-            //Instantiate(ParticlePuff, transform.position, Quaternion.identity);
             StartCoroutine(Death());
         }
 
         private IEnumerator Death()
         {
-            float die = UnityEngine.Random.Range(0, 0.3f);
-            yield return new WaitForSeconds(die); 
-            //Instantiate(ParticlePuff, transform.position, Quaternion.identity);
+
+            yield return new WaitForSeconds(die);
             Destroy(gameObject);
         }
     }
