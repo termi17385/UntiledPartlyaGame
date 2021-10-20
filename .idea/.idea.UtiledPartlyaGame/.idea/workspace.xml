@@ -2,9 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="51bddc0a-bb46-486f-bc4d-3a963c1d57fc" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/Assets/UtiledPartlyaGame/Scripts/Cards/BaseMatchCard.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/UtiledPartlyaGame/Scripts/Cards/BaseMatchCard.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/UtiledPartlyaGame/Scripts/Cards/BasePlayerCard.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/UtiledPartlyaGame/Scripts/Cards/BasePlayerCard.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Assets/UtiledPartlyaGame/Scripts/Cards/BaseTeamCard.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Assets/UtiledPartlyaGame/Scripts/Cards/BaseTeamCard.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Assets/Scenes.meta" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.UtiledPartlyaGame/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.UtiledPartlyaGame/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ProjectSettings/Packages/com.unity.probuilder/Settings.json" beforeDir="false" afterPath="$PROJECT_DIR$/ProjectSettings/Packages/com.unity.probuilder/Settings.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserSettings/EditorUserSettings.asset" beforeDir="false" afterPath="$PROJECT_DIR$/UserSettings/EditorUserSettings.asset" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -62,7 +63,8 @@
       <option name="presentableId" value="Default" />
       <updated>1634015366496</updated>
       <workItem from="1634015366498" duration="1313000" />
-      <workItem from="1634614679422" duration="1239000" />
+      <workItem from="1634614679422" duration="2102000" />
+      <workItem from="1634634824138" duration="335000" />
     </task>
     <servers />
   </component>
@@ -82,6 +84,7 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
