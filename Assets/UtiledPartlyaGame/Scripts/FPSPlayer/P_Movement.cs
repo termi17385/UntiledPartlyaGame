@@ -1,9 +1,7 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-namespace Player
+namespace UtiledPartlyaGame.FPSPlayer
 {
     public class P_Movement : MonoBehaviour
     {

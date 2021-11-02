@@ -1,13 +1,7 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.Experimental;
 using UnityEngine;
-
-using Random = System.Random;
 using UnityEngine.UI;
 
-namespace Player
+namespace UtiledPartlyaGame.FPSPlayer
 {
     public class P_FireWeapon : MonoBehaviour
     {

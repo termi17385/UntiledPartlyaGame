@@ -1,12 +1,8 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Security.Cryptography;
 using UnityEngine;
-using UnityEngine.SocialPlatforms;
-using Random = System.Random;
 
-namespace Player
+namespace UtiledPartlyaGame.FPSPlayer
 {
     public class P_Bullet : MonoBehaviour
     {
