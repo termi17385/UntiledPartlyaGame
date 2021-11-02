@@ -2,10 +2,10 @@
 /shelf/
 /workspace.xml
 # Rider ignored files
-/.idea.UntiledPartlyaGame.iml
-/projectSettingsUpdater.xml
-/modules.xml
 /contentModel.xml
+/projectSettingsUpdater.xml
+/.idea.UntiledPartlyaGame.iml
+/modules.xml
 # Datasource local storage ignored files
 /dataSources/
 /dataSources.local.xml

@@ -11,7 +11,7 @@ namespace Player
 {
     public class P_FireWeapon : MonoBehaviour
     {
-        [SerializeField] private GameObject BulletPrefab, ShotSpawner;
+        [SerializeField] private GameObject BulletPrefab, CasingPrefab, ShotSpawner, CasingSpawner;
         [SerializeField] private float rateOfFire = 0.1f, shotGap;
         [SerializeField] private AudioSource bulletNoise;
         [SerializeField] private GameObject Head, Gun;
@@ -20,6 +20,7 @@ namespace Player
         [SerializeField] private int variationMinimiser = 2;
         [SerializeField] private Image crosshair;
         [SerializeField] private int crosshairScaler = 7;
+        [SerializeField] private ParticleSystem muzzleFlash;
 
         void Update()
         {
@@ -73,7 +74,10 @@ namespace Player
                 
                 //normal firing outputs
                 GameObject bulletClone = Instantiate(BulletPrefab, ShotSpawner.gameObject.transform.position, ShotSpawner.transform.rotation);
+                GameObject casing = Instantiate(CasingPrefab, CasingSpawner.gameObject.transform.position,
+                    CasingSpawner.transform.rotation);
                 bulletNoise.Play();
+                muzzleFlash.Play();
                 shotGap = Time.time + rateOfFire;
             }
         }
