@@ -1603,7 +1603,7 @@ MonoBehaviour:
   onlineScene: Assets/UtiledPartlyaGame/Scenes/OfflineOnline/Online.unity
   transport: {fileID: 1281021150}
   networkAddress: localhost
-  maxConnections: 100
+  maxConnections: 8
   disconnectInactiveConnections: 0
   disconnectInactiveTimeout: 60
   authenticator: {fileID: 0}
