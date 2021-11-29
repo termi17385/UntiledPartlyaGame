@@ -1,53 +1,53 @@
 using UnityEngine;
 using Mirror;
-using UtiledPartlyaGame.FPSPlayer;
+using UtiledPartlyaGame.Player;
 
 namespace UtiledPartlyaGame.Networking
 {
 	/// <summary> Needs a change tbh. </summary>
 	public class NetworkPlayer : NetworkBehaviour
 	{
-		//[SerializeField] private GameObject enemyToSpawn;
+	#region Disable if not local player
+		[SerializeField] private MouseLook mouseLook;
+		[SerializeField] private Camera cam;
+		[SerializeField] private Canvas canvas;
+		[SerializeField] private GunTest gun;
+		[SerializeField] private AudioListener listener;
+		[SerializeField] private AudioSource[] gunAudioSources;
 
-		private void Update()
+		[SerializeField] private readonly string remotePlayerName = "RemotePlayer";
+	#endregion
+		[SerializeField] private GameObject selfUI;
+		private void Start()
 		{
-			// First determine if this function is being run on the local player.
-			if(isLocalPlayer)
+			if (isLocalPlayer)
 			{
-				if(Input.GetKeyDown(KeyCode.E))
-				{
-					//CmdSpawnEnemy();
-					print("Do a thing Pressed 'E'");
-				}
+				selfUI.SetActive(false);
+			}
+			else
+			{
+				cam.enabled = false;
+				canvas.enabled = false;
+				mouseLook.enabled = false;
+				gun.enabled = false;
+				listener.enabled = false;
+				foreach(var audioSource in gunAudioSources) audioSource.enabled = false;
+				foreach(Transform child in gameObject.transform) child.gameObject.layer = LayerMask.NameToLayer(remotePlayerName);
+				gameObject.layer = LayerMask.NameToLayer(remotePlayerName);
 			}
 		}
-
-		[Command] public void CmdSpawnEnemy()
-		{
-			// You first need to Instantiate...
-			//GameObject newEnemy = Instantiate(enemyToSpawn);
-			// ...and then you can spawn the enemy.
-			//NetworkServer.Spawn(newEnemy);
-		}
-		
+        
 		// This is run via the network starting and the player connecting...
 		// NOT Unity
 		// It is run when the object is spawned via the networking system NOT when Unity
-		// instantiates the object.
+		// instantiates the object
 		public override void OnStartClient()
 		{
-			// This will run REGARDLESS if we are the local or remote player.
-			// (isLocalPlayer) is true if this object is the client's local player otherwise it's false.
-			
-			P_JumpPing myJumpPing = gameObject.GetComponentInChildren<P_JumpPing>();
-			myJumpPing.enabled = isLocalPlayer;
-			
-			P_FireWeapon myFireWeapon = gameObject.GetComponentInChildren<P_FireWeapon>();
-			myFireWeapon.enabled = isLocalPlayer;
-			
-			P_Movement myMovement = gameObject.GetComponentInChildren<P_Movement>();
-			myMovement.enabled = isLocalPlayer;
-
+			// This will run REGARDLESS if we are the local or remote player
+			// isLocalPlayer is true if this object is the client's local player otherwise it's false
+			PlayerController controller = gameObject.GetComponent<PlayerController>();
+			controller.enabled = isLocalPlayer;
+            
 			CustomNetworkManager.AddPlayer(this);
 		}
 
