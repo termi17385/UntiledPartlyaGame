@@ -15,8 +15,8 @@ namespace UtiledPartlyaGame.Player
 
 		private void Start()
 		{
-			Cursor.lockState = CursorLockMode.Locked;
-			Cursor.visible = false;
+			//Cursor.lockState = CursorLockMode.Locked;
+			//Cursor.visible = false;
 
 			player = GetComponent<PlayerController>();
 		}
@@ -28,23 +28,23 @@ namespace UtiledPartlyaGame.Player
 				if(!player.isDead) MouseMovementStandard();
 				else if (player.isDead) FlightCamMouse();
 			
-				// Unlocks the mouse and stops camera rotation so you can use menus
-				// if (Input.GetKeyDown(KeyCode.Escape))
-				// {
-				// 	Cursor.lockState = CursorLockMode.None;
-				// 	Cursor.visible = true;
-				// 	isUsingMenu = true;
-				// }
+				//Unlocks the mouse and stops camera rotation so you can use menus
+				//if (Input.GetKeyDown(KeyCode.Escape))
+				//{
+				//	Cursor.lockState = CursorLockMode.None;
+				//	Cursor.visible = true;
+				//	isUsingMenu = true;
+				//}
 			}
 			else
 			{
 				// Locks cursor again so you can use mouse to look around
-				if (Input.GetKeyDown(KeyCode.Escape))
-				{
-					Cursor.lockState = CursorLockMode.Locked;
-					Cursor.visible = false;
-					isUsingMenu = false;
-				}
+				//////if (Input.GetKeyDown(KeyCode.Escape))
+				//////{
+				//////	Cursor.lockState = CursorLockMode.Locked;
+				//////	Cursor.visible = false;
+				//////	isUsingMenu = false;
+				//////}
 			}
 		}
 
@@ -66,12 +66,13 @@ namespace UtiledPartlyaGame.Player
 		{
 			float xRotation = 0;
 			// handles the characters movement
-			float mouseX = Input.GetAxis("Mouse X") * sensitivity;
+			//////float mouseX = Input.GetAxis("Mouse X") * sensitivity;
 			// We can add the Turning with Arrow To on screen arrows.
 			float TurnWithArrows = Input.GetAxis($"ArrowsTurning") * arrowSensitivity;
 
-			xRotation = mouseX * mouseX > TurnWithArrows * TurnWithArrows ? mouseX : TurnWithArrows;
-			
+			//////xRotation = mouseX * mouseX > TurnWithArrows * TurnWithArrows ? mouseX : TurnWithArrows;
+
+			xRotation = TurnWithArrows;
 			//float keyboardX = Input.GetAxis() * sensitivity;
 			
 			// We are only moving in the X Rotation now ~ Kieran 10:17 Monday 29/11/21.
