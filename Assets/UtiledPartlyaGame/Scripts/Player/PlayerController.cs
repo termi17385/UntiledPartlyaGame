@@ -43,11 +43,13 @@ namespace UtiledPartlyaGame.Player
         /// when the player dies </summary>
         private void PlayerSpectatorMode()
         {
-            var h = Input.GetAxis("Horizontal") * (speed * 100) * Time.deltaTime;
-            var v = Input.GetAxis("Vertical") * (speed * 100) * Time.deltaTime;
-            
-            transform.position += (transform.forward * v * Time.deltaTime);
-            transform.position += (transform.right * h * Time.deltaTime);
+            Debug.Log("You are dead -" + gameObject.name);
+            // Turning this off because we will just turn off their player controller and rigidbody reset them, and turn them on again. ~ Kieran 10:13 Monday 29/11/21.
+            // var h = Input.GetAxis("Horizontal") * (speed * 100) * Time.deltaTime;
+            // var v = Input.GetAxis("Vertical") * (speed * 100) * Time.deltaTime;
+            //
+            // transform.position += (transform.forward * v * Time.deltaTime);
+            // transform.position += (transform.right * h * Time.deltaTime);
         }
         /// <summary> Handles the movement
         /// and jumping of the player </summary>
@@ -67,13 +69,15 @@ namespace UtiledPartlyaGame.Player
                     vSpeed = 0; // stop the character moving down when grounded
                     resetGravity = false; 
                 }
-                if(Input.GetKeyDown(KeyCode.Space)) // checking if the player has jumped
-                {
-                    Debug.Log("jump pressed");
-                    vSpeed = jumpSpeed; // sets the upwards velocity
-                    //el.y = vSpeed;
-                    //layerChar.Move(vel * Time.deltaTime);
-                }
+                // Turning off Jumping ~ Kieran 10:08 Monday 29/11/21.
+                // if(Input.GetKeyDown(KeyCode.Space)) // checking if the player has jumped
+                // {
+                //     Debug.Log("jump pressed");
+                //     vSpeed = jumpSpeed; // sets the upwards velocity
+                //     //el.y = vSpeed;
+                //     //layerChar.Move(vel * Time.deltaTime);
+                // }
+                
                 //Debug.Log("Controller" + playerChar.isGrounded);
                 //Debug.Log("Collider" + grounded);
             }

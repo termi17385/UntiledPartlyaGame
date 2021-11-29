@@ -37,7 +37,7 @@ namespace UtiledPartlyaGame.Player
 		public void Shoot()
 		{
 			// if mouse is pressed and the time between shots is higher then next fire
-			if(isLocalPlayer && Input.GetKeyDown(KeyCode.Mouse0) && Time.time > nextFire)
+			if(isLocalPlayer && Input.GetButton("Fire1") && Time.time > nextFire)
 			{
 				// set the next fire
 				nextFire = Time.time + fireRate;

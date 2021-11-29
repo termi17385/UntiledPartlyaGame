@@ -6,6 +6,7 @@ namespace UtiledPartlyaGame.Player
 	{
 		[SerializeField] private Transform head;
 		[SerializeField, Range(0, 500)] public float sensitivity = 300;
+		[SerializeField, Range(0, 500)] public float arrowSensitivity = 30f;
 		[SerializeField] private float minY = -60, maxY = 60;
 	
 		private float rotY;
@@ -28,12 +29,12 @@ namespace UtiledPartlyaGame.Player
 				else if (player.isDead) FlightCamMouse();
 			
 				// Unlocks the mouse and stops camera rotation so you can use menus
-				if (Input.GetKeyDown(KeyCode.Escape))
-				{
-					Cursor.lockState = CursorLockMode.None;
-					Cursor.visible = true;
-					isUsingMenu = true;
-				}
+				// if (Input.GetKeyDown(KeyCode.Escape))
+				// {
+				// 	Cursor.lockState = CursorLockMode.None;
+				// 	Cursor.visible = true;
+				// 	isUsingMenu = true;
+				// }
 			}
 			else
 			{
@@ -52,22 +53,34 @@ namespace UtiledPartlyaGame.Player
 		/// so that it works with the flight controls </summary>
 		private void FlightCamMouse()
 		{
-			var rotX = transform.localEulerAngles.y + Input.GetAxis("Mouse X") * sensitivity * Time.deltaTime;
-			var newRotY = transform.localEulerAngles.x - Input.GetAxis("Mouse Y") * sensitivity * Time.deltaTime;
-			transform.localEulerAngles = new Vector3(newRotY, rotX, 0f);
+			Debug.Log("You are dead -" + gameObject.name);
+			// Turning this off because we will just turn off their player controller and rigidbody reset them, and turn them on again. ~ Kieran 10:17 Monday 29/11/21.
+			// var rotX = transform.localEulerAngles.y + Input.GetAxis("Mouse X") * sensitivity * Time.deltaTime;
+			// var newRotY = transform.localEulerAngles.x - Input.GetAxis("Mouse Y") * sensitivity * Time.deltaTime;
+			// transform.localEulerAngles = new Vector3(newRotY, rotX, 0f);
 		}
 
 		/// <summary> Standard mouse
 		/// look controls </summary>
 		private void MouseMovementStandard()
 		{
+			float xRotation = 0;
 			// handles the characters movement
-			var mouseX = Input.GetAxis("Mouse X") * sensitivity;
-			var mouseY = Input.GetAxis("Mouse Y") * sensitivity;
-			transform.Rotate(0, mouseX * Time.deltaTime, 0);
+			float mouseX = Input.GetAxis("Mouse X") * sensitivity;
+			// We can add the Turning with Arrow To on screen arrows.
+			float TurnWithArrows = Input.GetAxis($"ArrowsTurning") * arrowSensitivity;
+
+			xRotation = mouseX * mouseX > TurnWithArrows * TurnWithArrows ? mouseX : TurnWithArrows;
+			
+			//float keyboardX = Input.GetAxis() * sensitivity;
+			
+			// We are only moving in the X Rotation now ~ Kieran 10:17 Monday 29/11/21.
+			//float mouseY = Input.GetAxis("Mouse Y") * sensitivity;
+			
+			transform.Rotate(0, xRotation * Time.deltaTime, 0);
 
 			// handles the camera's movement
-			rotY -= mouseY * Time.deltaTime;
+			//rotY -= mouseY * Time.deltaTime;
 			rotY = Mathf.Clamp(rotY, minY, maxY);
 
 			// the head of the player (camera /or actual head)
