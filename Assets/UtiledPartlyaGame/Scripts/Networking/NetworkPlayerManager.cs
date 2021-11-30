@@ -22,7 +22,8 @@ namespace UtiledPartlyaGame.Networking
 		[Header("Player Stats")]
 		[SyncVar(hook = nameof(OnHealthChange))] public float health;
 		[SyncVar(hook = nameof(OnSetColour))] public Color playerColour;
-		
+		[SyncVar(hook = nameof(OnSetName))] public String playerName;
+		[SerializeField] private Text playerNameText;
 		[SerializeField] private Material cachedMaterial;
 		[SerializeField] private MeshRenderer cachedMesh;
 		[SerializeField] private MeshRenderer cachedGunMesh;
@@ -55,6 +56,7 @@ namespace UtiledPartlyaGame.Networking
 			if(isLocalPlayer)
 			{
 				CmdSetColour();
+				CmdSetName();
 				CmdSetHealth();
 			}
 
@@ -88,6 +90,18 @@ namespace UtiledPartlyaGame.Networking
 			playerColour = gameData.playerColor;
 		}
 
+		[Command]
+		private void CmdSetName()
+		{
+			// This is how we read the string data from a file.
+			string json = File.ReadAllText(FilePath + ".json");
+			// This is how you convert the Json back to a data type.
+			// The Generic is requited for making sure the returnded data is the same as the passed in.
+			gameData = JsonUtility.FromJson<SaveObject>(json);
+			Debug.Log(gameData.playerName);
+			playerName = gameData.playerName;
+		}
+
 		private void OnSetColour(Color _old, Color _new)
 		{
 			if(cachedMaterial == null || backgroundImage == null)
@@ -119,6 +133,17 @@ namespace UtiledPartlyaGame.Networking
 					cachedGunMesh.material = cyanMaterial;
 				}
 				backgroundImage.color = _new;
+			}
+		}
+		private void OnSetName(String _old, String _new)
+		{
+			if(playerNameText == null)
+			{
+				Debug.LogWarning("PLEASE SET TEXTBOX TO CHANGE IN INSPECTOR!!! ---> cachedMaterial = " + playerNameText);
+			}
+			else
+			{
+				playerNameText.text = _new;
 			}
 		}
 	

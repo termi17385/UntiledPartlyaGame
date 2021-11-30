@@ -3182,6 +3182,8 @@ MonoBehaviour:
     playerColor: {r: 0, g: 0, b: 0, a: 0}
   health: 50
   playerColour: {r: 0, g: 0, b: 0, a: 0}
+  playerName: 
+  playerNameText: {fileID: 7424564760148159014}
   cachedMaterial: {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
   cachedMesh: {fileID: 3647854111901770600}
   cachedGunMesh: {fileID: 9189617276089365379}
