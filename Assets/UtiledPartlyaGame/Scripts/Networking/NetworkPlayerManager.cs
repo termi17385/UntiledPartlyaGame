@@ -47,7 +47,6 @@ namespace UtiledPartlyaGame.Networking
 		
 		public TextMesh healthText;
 		
-		private const float MAX_STAMINA = 50; 
 		private const float MAX_HEALTH = 100;
 		private MouseLook mLook;
 
@@ -64,13 +63,10 @@ namespace UtiledPartlyaGame.Networking
 			
 			if(isLocalPlayer)
 			{
-				CmdSetStamina();
-				
 				cController = GetComponent<CharacterController>();
 				mLook = GetComponent<MouseLook>();
 				
 				uiManager.DisplayStat(health, MAX_HEALTH, StatType.Health);
-				uiManager.DisplayStat(stamina, MAX_STAMINA, StatType.Stamina);
 			}
 			else if (!isLocalPlayer)
 			{
@@ -195,9 +191,6 @@ namespace UtiledPartlyaGame.Networking
 
 		[Command]
 		private void CmdSetHealth() => health = MAX_HEALTH;
-
-		[Command]
-		public void CmdSetStamina() => stamina = MAX_STAMINA; 
 		
 		private void Respawn()
 		{
@@ -284,7 +277,6 @@ namespace UtiledPartlyaGame.Networking
 
 		public void DamageSelf(int _damage = 10)
 		{
-			
 			CmdDamagePlayer(_damage);
 		}
 
