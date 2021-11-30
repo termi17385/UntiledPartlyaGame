@@ -3177,7 +3177,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  gameData:
+    playerName: 
+    playerColor: {r: 0, g: 0, b: 0, a: 0}
   health: 50
+  playerColour: {r: 0, g: 0, b: 0, a: 0}
+  cachedMaterial: {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
   stamina: 25
   isDead: 0
   objectsToHide:
@@ -3653,7 +3658,7 @@ MonoBehaviour:
   m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_StyleSheet: {fileID: 0}
-  m_TextStyleHashCode: 0
+  m_TextStyleHashCode: -1183493901
   m_overrideHtmlColors: 0
   m_faceColor:
     serializedVersion: 2

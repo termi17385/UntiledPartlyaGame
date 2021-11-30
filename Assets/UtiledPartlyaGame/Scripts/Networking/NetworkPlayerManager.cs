@@ -2,16 +2,27 @@
 // Creation Time: 2021/10/20 2:50 PM
 using Mirror;
 using System;
+using System.IO;
 using TMPro;
 using UnityEngine;
 using UtiledPartlyaGame.Player;
+using Serialization;
 
 namespace UtiledPartlyaGame.Networking
 {
 	public class NetworkPlayerManager : NetworkBehaviour
 	{
+		// Streaming  assets is a folder that Unity creates that we can use.
+		// To load/save data in, in the Editor it is in the project folder,
+		// in a build, it is in the .exe's build folder
+		private string FilePath => Application.streamingAssetsPath + "/gameData";
+		[SerializeField] private SaveObject gameData = new SaveObject();
 		[Header("Player Stats")]
 		[SyncVar(hook = nameof(OnHealthChange))] public float health;
+		[SyncVar(hook = nameof(OnSetColour))] public Color playerColour;
+		
+		[SerializeField] private Material cachedMaterial;
+		
 		public float stamina;
 		
 		[Space] [SyncVar(hook = nameof(OnPlayerKilled))] public bool isDead;
@@ -34,7 +45,10 @@ namespace UtiledPartlyaGame.Networking
 		private void Start()
 		{
 			if(isLocalPlayer)
+			{
+				CmdSetColour();
 				CmdSetHealth();
+			}
 
 			isDead = false;
 			
@@ -54,12 +68,29 @@ namespace UtiledPartlyaGame.Networking
 			}
 		}
 
-		private void OnStartClient()
+		[Command]
+		private void CmdSetColour()
 		{
-			
+			// This is how we read the string data from a file.
+			string json = File.ReadAllText(FilePath + ".json");
+			// This is how you convert the Json back to a data type.
+			// The Generic is requited for making sure the returnded data is the same as the passed in.
+			gameData = JsonUtility.FromJson<SaveObject>(json);
+			playerColour = gameData.playerColor;
 		}
 
-		
+		private void OnSetColour(Color _old, Color _new)
+		{
+			if(cachedMaterial == null)
+			{
+				Debug.LogWarning("PLEASE SET MATERIAL TO CHANGE IN INSPECTOR!!! ---> cachedMaterial = " + cachedMaterial);
+			}
+			else
+			{
+				cachedMaterial.color = _new;
+			}
+		}
+	
 
 		private void Update()
 		{
@@ -68,6 +99,13 @@ namespace UtiledPartlyaGame.Networking
 
 		// todo: this needs to be handled better and changed
 		private void OnHealthChange(float _old, float _new)
+		{
+			if (isLocalPlayer)
+				CmdUpdateHealth(_new);
+		}
+		
+		// todo: this needs to be handled better and changed
+		private void OnColourSetup(float _old, float _new)
 		{
 			if (isLocalPlayer)
 				CmdUpdateHealth(_new);

@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using System.IO;
+using Serialization;
 
 namespace UtiledPartlyaGame.Menus
 {
@@ -50,10 +51,5 @@ namespace UtiledPartlyaGame.Menus
             SaveJson();
         }
 
-    }
-    [Serializable] public class SaveObject
-    {
-        public String playerName;
-        public Color playerColor;
     }
 }
