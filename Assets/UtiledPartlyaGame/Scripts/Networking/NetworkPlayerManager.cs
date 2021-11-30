@@ -45,7 +45,7 @@ namespace UtiledPartlyaGame.Networking
 		[SerializeField] private PlayerController pController;
 		[SerializeField] private UIManager uiManager;
 		
-		public TextMesh healthText;
+		public TMP_Text healthText;
 		
 		private const float MAX_HEALTH = 100;
 		private MouseLook mLook;
@@ -152,8 +152,8 @@ namespace UtiledPartlyaGame.Networking
 		// todo: this needs to be handled better and changed
 		private void OnHealthChange(float _old, float _new)
 		{
-			if (isLocalPlayer)
-				CmdUpdateHealth(_new);
+			//if (isLocalPlayer)
+			CmdUpdateHealth(_new);
 		}
 		
 		// todo: this needs to be handled better and changed
@@ -224,25 +224,29 @@ namespace UtiledPartlyaGame.Networking
 		}
 
 		// todo: this needs to be handled better and changed
-		[Command]
-		public void CmdTakeDamage(float _dmg)
+		[Command(requiresAuthority = false)] public void CmdTakeDamage(float _dmg)
 		{
-			if(isLocalPlayer) uiManager.DisplayStat(health, MAX_HEALTH, StatType.Health);
-			healthText.text = $"{health}/{MAX_HEALTH}";
-			
-			health -= _dmg;
-			if(health <= 0)
+			// if(isLocalPlayer)
 			{
-				health = 0;
-				CmdPlayerStatus(true);
+				uiManager.DisplayStat(health, MAX_HEALTH, StatType.Health);
+				healthText.text = $"{health}/{MAX_HEALTH}";
+
+				health -= _dmg;
+
+				if(health <= 0)
+				{
+					health = 0;
+					CmdPlayerStatus(true);
+				}
 			}
 		}
 
 		// todo: this needs to be handled better and changed
-		[Command]
+		[Command(requiresAuthority = false)]
 		public void CmdUpdateHealth(float _val)
 		{
-			healthText.text = $"{_val}/{MAX_HEALTH}";
+			if(isLocalPlayer) 
+				healthText.text = $"{_val}/{MAX_HEALTH}";
 		}
 		
 		/*[Command]
