@@ -1,5 +1,6 @@
 ﻿// Creator: Josh Jones
 // Creation Time: 2021/10/20 2:50 PM
+// Kieran editing :)/
 using Mirror;
 using System;
 using System.IO;
@@ -7,6 +8,7 @@ using TMPro;
 using UnityEngine;
 using UtiledPartlyaGame.Player;
 using Serialization;
+using UnityEngine.UI;
 
 namespace UtiledPartlyaGame.Networking
 {
@@ -22,6 +24,12 @@ namespace UtiledPartlyaGame.Networking
 		[SyncVar(hook = nameof(OnSetColour))] public Color playerColour;
 		
 		[SerializeField] private Material cachedMaterial;
+		[SerializeField] private MeshRenderer cachedMesh;
+		[SerializeField] private MeshRenderer cachedGunMesh;
+		[SerializeField] private Material cyanMaterial;
+		[SerializeField] private Material magentaMaterial;
+		[SerializeField] private Material grayMaterial;
+		[SerializeField] private Image backgroundImage;
 		
 		public float stamina;
 		
@@ -76,18 +84,41 @@ namespace UtiledPartlyaGame.Networking
 			// This is how you convert the Json back to a data type.
 			// The Generic is requited for making sure the returnded data is the same as the passed in.
 			gameData = JsonUtility.FromJson<SaveObject>(json);
+			Debug.Log(gameData.playerColor);
 			playerColour = gameData.playerColor;
 		}
 
 		private void OnSetColour(Color _old, Color _new)
 		{
-			if(cachedMaterial == null)
+			if(cachedMaterial == null || backgroundImage == null)
 			{
 				Debug.LogWarning("PLEASE SET MATERIAL TO CHANGE IN INSPECTOR!!! ---> cachedMaterial = " + cachedMaterial);
 			}
 			else
 			{
-				cachedMaterial.color = _new;
+				Debug.Log(_new);
+				if(_new == Color.magenta)
+				{
+					Debug.Log("colour = Magenta");
+					//cachedMaterial = magentaMaterial;
+					cachedMesh.material = magentaMaterial;
+					cachedGunMesh.material = magentaMaterial;
+				}
+				else if(_new == Color.gray)
+				{
+					Debug.Log("colour = gray");
+					// cachedMaterial = grayMaterial;
+					cachedMesh.material = grayMaterial;
+					cachedGunMesh.material = grayMaterial;
+				}
+				if(_new == Color.cyan)
+				{
+					Debug.Log("colour = cyan");
+					//cachedMaterial = cyanMaterial;
+					cachedMesh.material = cyanMaterial;
+					cachedGunMesh.material = cyanMaterial;
+				}
+				backgroundImage.color = _new;
 			}
 		}
 	
