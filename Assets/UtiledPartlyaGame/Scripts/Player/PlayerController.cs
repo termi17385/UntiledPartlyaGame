@@ -37,7 +37,7 @@ namespace UtiledPartlyaGame.Player
         }
         private void Update()
         {
-            CheckInputPlatform();
+            //CheckInputPlatform();
             if(!isDead) PlayerMovement();
             else if (isDead) PlayerSpectatorMode();
         }
@@ -53,27 +53,6 @@ namespace UtiledPartlyaGame.Player
                 inputMethod = InputMethod.MouseAndKeyboard;
                 TurnOnMouseAndKeyboardInput();
             #endif
-            }
-
-            /// <summary> Checks if player on a mobile platform </summary>
-            private void CheckInputPlatform()
-            {
-                InputMethod oldUsingPlatform = inputMethod;
-            #if UNITY_IOS || UNITY_ANDROID
-			    inputMethod = InputMethod.Mobile;
-            #else
-                inputMethod = InputMethod.MouseAndKeyboard;
-            #endif
-			
-                if(oldUsingPlatform != inputMethod)
-                {
-                    if(inputMethod == InputMethod.MouseAndKeyboard)
-                        TurnOnMouseAndKeyboardInput();
-                    if(inputMethod == InputMethod.Mobile)
-                        TurnOnMobileInput();
-                    else
-                        Debug.Log("No input system found!!");
-                }
             }
 
             private void TurnOnMobileInput()

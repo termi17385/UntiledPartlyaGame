@@ -2,6 +2,7 @@
 // Creation Time: 2021/10/20 3:18 PM
 
 using Mirror;
+using System;
 using UnityEngine;
 using UtiledPartlyaGame.Networking;
 
@@ -9,6 +10,10 @@ namespace UtiledPartlyaGame.Player
 {
 	public class GunTest : NetworkBehaviour
 	{
+		[Header("Input Variables")]
+		[SerializeField] private Joystick mobileRightJoystick;
+		[SerializeField] private KeyCode [] shootKey = new[] { KeyCode.Mouse0 };
+		[SerializeField] private InputMethod inputMethod = InputMethod.MouseAndKeyboard;
 		[Header("Base Variables")]
 		[SerializeField] private int damage = 10;
 		[SerializeField] private float fireRate = .25f;
@@ -26,6 +31,7 @@ namespace UtiledPartlyaGame.Player
 
 		private void Start()
 		{
+			CheckInputPlatform();
 			playerManager = GetComponent<NetworkPlayerManager>();
 		}
 
@@ -34,30 +40,63 @@ namespace UtiledPartlyaGame.Player
 			Shoot();
 		} 
 
+	#region InputMethodChecks
+		/// <summary> Checks if player on a mobile platform </summary>
+		private void CheckInputPlatform()
+		{
+		#if UNITY_IOS || UNITY_ANDROID
+			    inputMethod = InputMethod.Mobile;
+		#else
+			inputMethod = InputMethod.MouseAndKeyboard;
+		#endif
+		}
+	#endregion
+		
 		public void Shoot()
 		{
 			// if mouse is pressed and the time between shots is higher then next fire
-			if(isLocalPlayer && Input.GetKey(KeyCode.Mouse2) && Time.time > nextFire)
+			if(isLocalPlayer && Time.time > nextFire)
 			{
-				// set the next fire
-				nextFire = Time.time + fireRate;
-				// sets the ray to the center of the screen/camera viewport
-				Vector3 rayOrigin = cam.ViewportToWorldPoint(new Vector3(.5f, .5f, 0));
-				RaycastHit hit;
-				//playerManager.CmdStartParticles(); 
-				muzzleFlash.Play();
-				shootSound.Play();
-				
-				// shoot the target
-				if(Physics.Raycast(rayOrigin, cam.transform.forward, out hit, weaponRange, ignorePlayer))
+				if(inputMethod == InputMethod.MouseAndKeyboard)
 				{
-					if(hit.collider.CompareTag("Player"))
+					for(int i = 0; i < shootKey.Length; i++)
 					{
-						gunSound.Play();
-						var remotePlayerID = hit.collider.GetComponent<NetworkIdentity>().netId;
-						CmdHitTarget(remotePlayerID);
-						Debug.Log($"Player {hit.collider.gameObject.name} {remotePlayerID} hit!");
+						if(Input.GetKey(shootKey[i]))
+						{
+							FireGun();
+							return;
+						}
 					}
+				}
+				else if(inputMethod == InputMethod.Mobile)
+				{
+						Debug.Log($"mobileRightJoystick.Vertical = {mobileRightJoystick.Vertical} --- Abs.mobileRightJoystick.Vertical = {Math.Abs(mobileRightJoystick.Vertical)}");
+					if(Math.Abs(mobileRightJoystick.Vertical) > 0.3f)
+						FireGun();
+				}
+			}
+		}
+
+		private void FireGun()
+		{
+			// set the next fire
+			nextFire = Time.time + fireRate;
+			// sets the ray to the center of the screen/camera viewport
+			Vector3 rayOrigin = cam.ViewportToWorldPoint(new Vector3(.5f, .5f, 0));
+			RaycastHit hit;
+			//playerManager.CmdStartParticles(); 
+			muzzleFlash.Play();
+			shootSound.Play();
+
+			// shoot the target
+			if(Physics.Raycast(rayOrigin, cam.transform.forward, out hit, weaponRange, ignorePlayer))
+			{
+				if(hit.collider.CompareTag("Player"))
+				{
+					gunSound.Play();
+					var remotePlayerID = hit.collider.GetComponent<NetworkIdentity>().netId;
+					CmdHitTarget(remotePlayerID);
+					Debug.Log($"Player {hit.collider.gameObject.name} {remotePlayerID} hit!");
 				}
 			}
 		}

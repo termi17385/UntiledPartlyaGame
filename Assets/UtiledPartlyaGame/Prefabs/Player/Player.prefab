@@ -2899,9 +2899,11 @@ MonoBehaviour:
   mobileRightJoystick: {fileID: 6415452493276333576}
   sensitivity: 300
   arrowSensitivity: 200
-  joystickSensitivity: 106
+  joystickSensitivity: 67
   minY: -90
   maxY: 90
+  inputMethod: 1
+  MouseUnlocked: 0
 --- !u!114 &7435392414859392436
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2919,6 +2921,7 @@ MonoBehaviour:
   jumpSpeed: 10
   gravityModifier: 2
   mobileLeftJoystick: {fileID: 738389833361698949}
+  inputMethod: 1
   isDead: 0
   hideObjects:
   - {fileID: 1528851855652737393}
@@ -3000,6 +3003,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  mobileRightJoystick: {fileID: 6415452493276333576}
+  shootKey: 43010000110100001201000020000000
+  inputMethod: 1
   damage: 10
   fireRate: 0.2
   weaponRange: 50
@@ -3112,7 +3118,7 @@ MonoBehaviour:
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 854, y: 480}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
