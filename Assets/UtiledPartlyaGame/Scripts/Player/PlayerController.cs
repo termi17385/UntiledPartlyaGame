@@ -67,7 +67,6 @@ namespace UtiledPartlyaGame.Player
                 mobileLeftJoystick.gameObject.SetActive(false);
             }
         #endregion
-            
         #region Movement Types
         /// <summary> Basic spectator flight
         /// when the player dies </summary>

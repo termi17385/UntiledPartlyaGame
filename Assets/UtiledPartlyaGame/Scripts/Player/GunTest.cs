@@ -38,7 +38,14 @@ namespace UtiledPartlyaGame.Player
 		private void Update()
 		{
 			Shoot();
-		} 
+			DrawRay();
+		}
+
+		private void DrawRay()
+		{
+			Vector3 rayOrigin = cam.ViewportToWorldPoint(new Vector3(.5f, .5f, 0));
+			Debug.DrawRay(rayOrigin,cam.transform.forward * 100, Color.green);
+		}
 
 	#region InputMethodChecks
 		/// <summary> Checks if player on a mobile platform </summary>
@@ -70,7 +77,6 @@ namespace UtiledPartlyaGame.Player
 				}
 				else if(inputMethod == InputMethod.Mobile)
 				{
-						Debug.Log($"mobileRightJoystick.Vertical = {mobileRightJoystick.Vertical} --- Abs.mobileRightJoystick.Vertical = {Math.Abs(mobileRightJoystick.Vertical)}");
 					if(Math.Abs(mobileRightJoystick.Vertical) > 0.3f)
 						FireGun();
 				}
@@ -105,7 +111,7 @@ namespace UtiledPartlyaGame.Player
 		public void CmdHitTarget(uint _id)
 		{
 			var getTarget = CustomNetworkManager.FindPlayer(_id).GetComponent<NetworkPlayerManager>();
-			getTarget.RpcTakeDamage(damage);
+			getTarget.CmdTakeDamage(damage);
 		}
 	}
 }

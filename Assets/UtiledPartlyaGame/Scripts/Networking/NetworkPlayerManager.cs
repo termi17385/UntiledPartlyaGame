@@ -33,13 +33,14 @@ namespace UtiledPartlyaGame.Networking
 
 		private void Start()
 		{
-			//if(isLocalPlayer) CmdSetHealth();
-			RpcSetHealth();
+			if(isLocalPlayer)
+				CmdSetHealth();
 
 			isDead = false;
+			
 			if(isLocalPlayer)
 			{
-				SetStamina();
+				CmdSetStamina();
 				
 				cController = GetComponent<CharacterController>();
 				mLook = GetComponent<MouseLook>();
@@ -53,6 +54,13 @@ namespace UtiledPartlyaGame.Networking
 			}
 		}
 
+		private void OnStartClient()
+		{
+			
+		}
+
+		
+
 		private void Update()
 		{
 			if(isLocalPlayer) uiManager.DisplayStat(health, MAX_HEALTH, StatType.Health);
@@ -61,7 +69,8 @@ namespace UtiledPartlyaGame.Networking
 		// todo: this needs to be handled better and changed
 		private void OnHealthChange(float _old, float _new)
 		{
-			RpcUpdateHealth(_new);
+			if (isLocalPlayer)
+				CmdUpdateHealth(_new);
 		}
 		
 		// todo: when rigged models are obtained redo this method properly
@@ -86,14 +95,15 @@ namespace UtiledPartlyaGame.Networking
 				cController.enabled = true;
 				pController.isDead = false;
 				
-				RpcSetHealth();
+				CmdSetHealth();
 			}
 		}
 
-		// todo: this needs to be handled better and changed
-		[ClientRpc]
-		public void RpcSetHealth() => health = MAX_HEALTH; 
-		public void SetStamina() => stamina = MAX_STAMINA; 
+		[Command]
+		private void CmdSetHealth() => health = MAX_HEALTH;
+
+		[Command]
+		public void CmdSetStamina() => stamina = MAX_STAMINA; 
 		
 		private void Respawn()
 		{
@@ -127,8 +137,8 @@ namespace UtiledPartlyaGame.Networking
 		}
 
 		// todo: this needs to be handled better and changed
-		[ClientRpc]
-		public void RpcTakeDamage(float _dmg)
+		[Command]
+		public void CmdTakeDamage(float _dmg)
 		{
 			if(isLocalPlayer) uiManager.DisplayStat(health, MAX_HEALTH, StatType.Health);
 			healthText.text = $"{health}/{MAX_HEALTH}";
@@ -142,8 +152,8 @@ namespace UtiledPartlyaGame.Networking
 		}
 
 		// todo: this needs to be handled better and changed
-		[ClientRpc]
-		public void RpcUpdateHealth(float _val)
+		[Command]
+		public void CmdUpdateHealth(float _val)
 		{
 			healthText.text = $"{_val}/{MAX_HEALTH}";
 		}
