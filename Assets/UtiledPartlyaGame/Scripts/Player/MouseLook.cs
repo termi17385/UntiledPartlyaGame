@@ -21,6 +21,7 @@ namespace UtiledPartlyaGame.Player
 
 		private void Start()
 		{
+			MouseUnlocked = true;
 			FirstInputMethodCheck();
 			player = GetComponent<PlayerController>();
 		}
@@ -35,21 +36,31 @@ namespace UtiledPartlyaGame.Player
 				else if (player.isDead) FlightCamMouse();
 			
 				//Unlocks the mouse and stops camera rotation so you can use menus
-				if(Input.GetKeyDown(KeyCode.Escape))
+				if(inputMethod == InputMethod.MouseAndKeyboard)
 				{
-					if(MouseUnlocked)
+					if(Cursor.visible)
 					{
-						Cursor.lockState = CursorLockMode.None;
-						Cursor.visible = true;
 						MouseUnlocked = true;
+						Cursor.lockState = CursorLockMode.None;
+						if(Input.GetKeyDown(KeyCode.Mouse0))
+						{
+							Cursor.visible = false;
+						}
 					}
-					else if (!MouseUnlocked)
+					else
 					{
-						Cursor.lockState = CursorLockMode.Locked;
-						Cursor.visible = false;
 						MouseUnlocked = false;
+						Cursor.lockState = CursorLockMode.Confined;
 					}
+
 				}
+				else if(inputMethod == InputMethod.Mobile)
+				{
+					MouseUnlocked = true;
+					Cursor.lockState = CursorLockMode.None;
+					Cursor.visible = false;
+				}
+
 			}
 			else
 			{
@@ -68,8 +79,6 @@ namespace UtiledPartlyaGame.Player
 
 		private void FirstInputMethodCheck()
 		{
-			MouseUnlocked = true;
-			
 		#if UNITY_IOS || UNITY_ANDROID
 			inputMethod = InputMethod.Mobile;
 			TurnOnMobileInput();
@@ -106,7 +115,6 @@ namespace UtiledPartlyaGame.Player
 			mobileRightJoystick.gameObject.SetActive(true);
 			Cursor.lockState = CursorLockMode.None;
 			Cursor.visible = false;
-			MouseUnlocked = true;
 		}
 
 		private void TurnOnMouseAndKeyboardInput()
@@ -115,7 +123,6 @@ namespace UtiledPartlyaGame.Player
 			mobileRightJoystick.gameObject.SetActive(false);
 			Cursor.lockState = CursorLockMode.Locked;
 			Cursor.visible = false;
-			MouseUnlocked = false;
 		}
 	#endregion
 
@@ -149,12 +156,15 @@ namespace UtiledPartlyaGame.Player
 					}
 				}
 			}
-			else if (inputMethod == InputMethod.MouseAndKeyboard)
+			else if(inputMethod == InputMethod.MouseAndKeyboard)
 			{
-				float mouseX = Input.GetAxis("Mouse X") * sensitivity;
-				// We can add the Turning with Arrow To on screen arrows.
-				float TurnWithArrows = Input.GetAxis($"ArrowsTurning") * arrowSensitivity;
-				xRotation = mouseX * mouseX > TurnWithArrows * TurnWithArrows ? mouseX : TurnWithArrows;
+				if(!MouseUnlocked)
+				{
+					float mouseX = Input.GetAxis("Mouse X") * sensitivity;
+					// We can add the Turning with Arrow To on screen arrows.
+					float TurnWithArrows = Input.GetAxis($"ArrowsTurning") * arrowSensitivity;
+					xRotation = mouseX * mouseX > TurnWithArrows * TurnWithArrows ? mouseX : TurnWithArrows;
+				}
 			}
 			else
 			{
