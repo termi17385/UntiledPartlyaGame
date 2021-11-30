@@ -1,39 +1,18 @@
 ﻿// Creator: Josh Jones
 // Creation Time: 2021/10/20 2:50 PM
-// Kieran editing :)/
 using Mirror;
 using System;
-using System.IO;
 using TMPro;
 using UnityEngine;
 using UtiledPartlyaGame.Player;
-using Serialization;
-using UnityEngine.UI;
 
 namespace UtiledPartlyaGame.Networking
 {
 	public class NetworkPlayerManager : NetworkBehaviour
 	{
-		// Streaming  assets is a folder that Unity creates that we can use.
-		// To load/save data in, in the Editor it is in the project folder,
-		// in a build, it is in the .exe's build folder
-		private string FilePath => Application.streamingAssetsPath + "/gameData";
-		[SerializeField] private SaveObject gameData = new SaveObject();
 		[Header("Player Stats")]
 		[SyncVar(hook = nameof(OnHealthChange))] public float health;
-		[SyncVar(hook = nameof(OnSetColour))] public Color playerColour;
-		[SyncVar(hook = nameof(OnSetName))] public String playerName;
-		[SyncVar(hook = nameof(OnSetLives))] public int playerLives;
-		[SerializeField] private Text playerNameText;
-		[SerializeField] private TMP_Text playerLivesText;
-		[SerializeField] private Material cachedMaterial;
-		[SerializeField] private MeshRenderer cachedMesh;
-		[SerializeField] private MeshRenderer cachedGunMesh;
-		[SerializeField] private Material cyanMaterial;
-		[SerializeField] private Material magentaMaterial;
-		[SerializeField] private Material grayMaterial;
-		[SerializeField] private Image backgroundImage;
-		
+		[SerializeField, SyncVar] private int lives;
 		public float stamina;
 		
 		[Space] [SyncVar(hook = nameof(OnPlayerKilled))] public bool isDead;
@@ -47,121 +26,60 @@ namespace UtiledPartlyaGame.Networking
 		[SerializeField] private PlayerController pController;
 		[SerializeField] private UIManager uiManager;
 		
-		public TMP_Text healthText;
+		public TextMesh healthText;
 		
+		private const float MAX_STAMINA = 50; 
 		private const float MAX_HEALTH = 100;
-		private const int MAX_PLAYERLIVES = 3;
 		private MouseLook mLook;
+		[SerializeField, SyncVar]private bool masterPlayer;
 
 		private void Start()
 		{
-			if(isLocalPlayer)
+			if(isServer)
 			{
-				CmdSetColour();
-				CmdSetName();
-				CmdSetHealth();
-				CmdSetLives();
+				if(isLocalPlayer)
+				{
+					lives = GameManager.instance.PlayerLives;
+					masterPlayer = this;
+				}
 			}
-
-			isDead = false;
+			else
+			{
+				if(isLocalPlayer)
+				{
+					var players = FindObjectsOfType<NetworkPlayerManager>();
+					foreach(var nPlayer in players)
+					{
+						if(nPlayer.masterPlayer)
+						{
+							lives = nPlayer.lives;
+							break;
+						}
+					}
+				}
+			}
 			
+			//if(isLocalPlayer) CmdSetHealth();
+			RpcSetHealth();
+			
+			isDead = false;
 			if(isLocalPlayer)
 			{
+				SetStamina();
+				
 				cController = GetComponent<CharacterController>();
 				mLook = GetComponent<MouseLook>();
 				
 				uiManager.DisplayStat(health, MAX_HEALTH, StatType.Health);
+				uiManager.DisplayStat(stamina, MAX_STAMINA, StatType.Stamina);
+				
+				
 			}
 			else if (!isLocalPlayer)
 			{
 				uiManager.enabled = false;
 			}
 		}
-
-		[Command]
-		private void CmdSetColour()
-		{
-			// This is how we read the string data from a file.
-			string json = File.ReadAllText(FilePath + ".json");
-			// This is how you convert the Json back to a data type.
-			// The Generic is requited for making sure the returnded data is the same as the passed in.
-			gameData = JsonUtility.FromJson<SaveObject>(json);
-			Debug.Log(gameData.playerColor);
-			playerColour = gameData.playerColor;
-		}
-
-		[Command]
-		private void CmdSetName()
-		{
-			// This is how we read the string data from a file.
-			string json = File.ReadAllText(FilePath + ".json");
-			// This is how you convert the Json back to a data type.
-			// The Generic is requited for making sure the returnded data is the same as the passed in.
-			gameData = JsonUtility.FromJson<SaveObject>(json);
-			Debug.Log(gameData.playerName);
-			playerName = gameData.playerName;
-		}
-
-		private void OnSetColour(Color _old, Color _new)
-		{
-			if(cachedMaterial == null || backgroundImage == null)
-			{
-				Debug.LogWarning("PLEASE SET MATERIAL TO CHANGE IN INSPECTOR!!! ---> cachedMaterial = " + cachedMaterial);
-			}
-			else
-			{
-				Debug.Log(_new);
-				if(_new == Color.magenta)
-				{
-					Debug.Log("colour = Magenta");
-					//cachedMaterial = magentaMaterial;
-					cachedMesh.material = magentaMaterial;
-					cachedGunMesh.material = magentaMaterial;
-				}
-				else if(_new == Color.gray)
-				{
-					Debug.Log("colour = gray");
-					// cachedMaterial = grayMaterial;
-					cachedMesh.material = grayMaterial;
-					cachedGunMesh.material = grayMaterial;
-				}
-				if(_new == Color.cyan)
-				{
-					Debug.Log("colour = cyan");
-					//cachedMaterial = cyanMaterial;
-					cachedMesh.material = cyanMaterial;
-					cachedGunMesh.material = cyanMaterial;
-				}
-				backgroundImage.color = _new;
-			}
-		}
-		private void OnSetName(String _old, String _new)
-		{
-			if(playerNameText == null)
-			{
-				Debug.LogWarning("PLEASE SET TEXT BOX TO CHANGE IN INSPECTOR!!! ---> cachedMaterial = " + playerNameText);
-			}
-			else
-			{
-				playerNameText.text = _new;
-			}
-		}
-		private void OnSetLives(int _old, int _new)
-		{
-			if(playerNameText == null)
-			{
-				Debug.LogWarning("PLEASE SET TEXTBOX TO CHANGE IN INSPECTOR!!! ---> cachedMaterial = " + playerNameText);
-			}
-			else
-			{
-				if(_new <= 0)
-				{
-					Debug.Log("Player Died ---> " + gameObject, gameObject);
-				}
-				playerLivesText.text = _new.ToString();
-			}
-		}
-	
 
 		private void Update()
 		{
@@ -171,15 +89,7 @@ namespace UtiledPartlyaGame.Networking
 		// todo: this needs to be handled better and changed
 		private void OnHealthChange(float _old, float _new)
 		{
-			//if (isLocalPlayer)
-			CmdUpdateHealth(_new);
-		}
-		
-		// todo: this needs to be handled better and changed
-		private void OnColourSetup(float _old, float _new)
-		{
-			if (isLocalPlayer)
-				CmdUpdateHealth(_new);
+			RpcUpdateHealth(_new);
 		}
 		
 		// todo: when rigged models are obtained redo this method properly
@@ -204,15 +114,14 @@ namespace UtiledPartlyaGame.Networking
 				cController.enabled = true;
 				pController.isDead = false;
 				
-				CmdSetHealth();
+				RpcSetHealth();
 			}
 		}
 
-		[Command]
-		private void CmdSetHealth() => health = MAX_HEALTH;
-		
-		[Command]
-		private void CmdSetLives() => playerLives = MAX_PLAYERLIVES;
+		// todo: this needs to be handled better and changed
+		[ClientRpc]
+		public void RpcSetHealth() => health = MAX_HEALTH; 
+		public void SetStamina() => stamina = MAX_STAMINA; 
 		
 		private void Respawn()
 		{
@@ -246,29 +155,25 @@ namespace UtiledPartlyaGame.Networking
 		}
 
 		// todo: this needs to be handled better and changed
-		[Command(requiresAuthority = false)] public void CmdTakeDamage(float _dmg)
+		[ClientRpc]
+		public void RpcTakeDamage(float _dmg)
 		{
-			// if(isLocalPlayer)
+			if(isLocalPlayer) uiManager.DisplayStat(health, MAX_HEALTH, StatType.Health);
+			healthText.text = $"{health}/{MAX_HEALTH}";
+			
+			health -= _dmg;
+			if(health <= 0)
 			{
-				uiManager.DisplayStat(health, MAX_HEALTH, StatType.Health);
-				healthText.text = $"{health}/{MAX_HEALTH}";
-
-				health -= _dmg;
-
-				if(health <= 0)
-				{
-					health = 0;
-					CmdPlayerStatus(true);
-				}
+				health = 0;
+				CmdPlayerStatus(true);
 			}
 		}
 
 		// todo: this needs to be handled better and changed
-		[Command(requiresAuthority = false)]
-		public void CmdUpdateHealth(float _val)
+		[ClientRpc]
+		public void RpcUpdateHealth(float _val)
 		{
-			if(isLocalPlayer) 
-				healthText.text = $"{_val}/{MAX_HEALTH}";
+			healthText.text = $"{_val}/{MAX_HEALTH}";
 		}
 		
 		/*[Command]
@@ -303,6 +208,7 @@ namespace UtiledPartlyaGame.Networking
 
 		public void DamageSelf(int _damage = 10)
 		{
+			
 			CmdDamagePlayer(_damage);
 		}
 

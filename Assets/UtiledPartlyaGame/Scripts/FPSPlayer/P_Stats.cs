@@ -10,7 +10,7 @@ namespace UtiledPartlyaGame.FPSPlayer
         private float currentHP;
         private Image[] hpBars;
         private bool healing;
-    
+
         private enum ElementTypes
         {
             Metal, Water, Nature, Fire, Earth

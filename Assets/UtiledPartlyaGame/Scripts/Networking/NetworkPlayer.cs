@@ -17,12 +17,12 @@ namespace UtiledPartlyaGame.Networking
 
 		[SerializeField] private readonly string remotePlayerName = "RemotePlayer";
 	#endregion
-		//[SerializeField] private GameObject selfUI;
+		[SerializeField] private GameObject selfUI;
 		private void Start()
 		{
 			if (isLocalPlayer)
 			{
-				//selfUI.SetActive(false);
+				selfUI.SetActive(false);
 			}
 			else
 			{
