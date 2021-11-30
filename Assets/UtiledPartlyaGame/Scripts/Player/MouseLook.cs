@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace UtiledPartlyaGame.Player
@@ -10,6 +11,9 @@ namespace UtiledPartlyaGame.Player
 		[SerializeField, Range(0, 500)] public float arrowSensitivity = 200f;
 		[SerializeField, Range(0, 500)] private float joystickSensitivity = 250f;
 		[SerializeField] private float minY = -60, maxY = 60;
+
+		[SerializeField] private InputMethod inputMethod = InputMethod.MouseAndKeyboard;
+		[SerializeField] private bool MouseUnlocked;
 	
 		private float rotY;
 		private bool isUsingMenu = false;
@@ -17,26 +21,35 @@ namespace UtiledPartlyaGame.Player
 
 		private void Start()
 		{
-			//Cursor.lockState = CursorLockMode.Locked;
-			//Cursor.visible = false;
-
+			FirstInputMethodCheck();
 			player = GetComponent<PlayerController>();
 		}
 
+
 		private void Update()
 		{
+			CheckInputPlatform();
 			if (!isUsingMenu)
 			{
 				if(!player.isDead) MouseMovementStandard();
 				else if (player.isDead) FlightCamMouse();
 			
 				//Unlocks the mouse and stops camera rotation so you can use menus
-				// if (Input.GetKeyDown(KeyCode.Escape))
-				// {
-				// 	Cursor.lockState = CursorLockMode.None;
-				// 	Cursor.visible = true;
-				// 	//isUsingMenu = true;
-				// }
+				if(Input.GetKeyDown(KeyCode.Escape))
+				{
+					if(MouseUnlocked)
+					{
+						Cursor.lockState = CursorLockMode.None;
+						Cursor.visible = true;
+						MouseUnlocked = true;
+					}
+					else if (!MouseUnlocked)
+					{
+						Cursor.lockState = CursorLockMode.Locked;
+						Cursor.visible = false;
+						MouseUnlocked = false;
+					}
+				}
 			}
 			else
 			{
@@ -48,7 +61,63 @@ namespace UtiledPartlyaGame.Player
 				//////	isUsingMenu = false;
 				//////}
 			}
+			
 		}
+
+	#region InputMethodChecks
+
+		private void FirstInputMethodCheck()
+		{
+			MouseUnlocked = true;
+			
+		#if UNITY_IOS || UNITY_ANDROID
+			inputMethod = InputMethod.Mobile;
+			TurnOnMobileInput();
+		#else
+			inputMethod = InputMethod.MouseAndKeyboard;
+			TurnOnMouseAndKeyboardInput();
+		#endif
+		}
+
+		/// <summary> Checks mobile platform </summary>
+		private void CheckInputPlatform()
+		{
+			InputMethod oldUsingPlatform = inputMethod;
+		#if UNITY_IOS || UNITY_ANDROID
+			inputMethod = InputMethod.Mobile;
+		#else
+			inputMethod = InputMethod.MouseAndKeyboard;
+		#endif
+			
+			if(oldUsingPlatform != inputMethod)
+			{
+				if(inputMethod == InputMethod.MouseAndKeyboard)
+					TurnOnMouseAndKeyboardInput();
+				if(inputMethod == InputMethod.Mobile)
+					TurnOnMobileInput();
+				else
+					Debug.Log("No input system found!!", gameObject);
+			}
+		}
+
+		private void TurnOnMobileInput()
+		{
+			// Turn on mobile joystick.
+			mobileRightJoystick.gameObject.SetActive(true);
+			Cursor.lockState = CursorLockMode.None;
+			Cursor.visible = false;
+			MouseUnlocked = true;
+		}
+
+		private void TurnOnMouseAndKeyboardInput()
+		{
+			// Turn off Mobile Joystick.
+			mobileRightJoystick.gameObject.SetActive(false);
+			Cursor.lockState = CursorLockMode.Locked;
+			Cursor.visible = false;
+			MouseUnlocked = false;
+		}
+	#endregion
 
 	#region Controls
 		/// <summary> Alters the mouse controls slightly
@@ -67,19 +136,30 @@ namespace UtiledPartlyaGame.Player
 		private void MouseMovementStandard()
 		{
 			float xRotation = 0;
+			
 			// handles the characters movement
-			//float mouseX = Input.GetAxis("Mouse X") * sensitivity;
-			// We can add the Turning with Arrow To on screen arrows.
-			float TurnWithArrows = Input.GetAxis($"ArrowsTurning") * arrowSensitivity;
-			
-			float TurnWithJoystick = mobileRightJoystick.Horizontal * joystickSensitivity;
-
-			//xRotation = mouseX * mouseX > TurnWithArrows * TurnWithArrows ? mouseX : TurnWithArrows;
-
-			xRotation = TurnWithArrows;
-			if (mobileRightJoystick.Horizontal != 0)
-				xRotation = TurnWithJoystick;
-			
+			if(inputMethod == InputMethod.Mobile)
+			{
+				if(mobileRightJoystick.gameObject != null)
+				{
+					if(mobileRightJoystick.gameObject.active)
+					{
+						float TurnWithJoystick = mobileRightJoystick.Horizontal * joystickSensitivity;
+						xRotation = TurnWithJoystick;
+					}
+				}
+			}
+			else if (inputMethod == InputMethod.MouseAndKeyboard)
+			{
+				float mouseX = Input.GetAxis("Mouse X") * sensitivity;
+				// We can add the Turning with Arrow To on screen arrows.
+				float TurnWithArrows = Input.GetAxis($"ArrowsTurning") * arrowSensitivity;
+				xRotation = mouseX * mouseX > TurnWithArrows * TurnWithArrows ? mouseX : TurnWithArrows;
+			}
+			else
+			{
+				Debug.Log("No input system found!!", gameObject);
+			}
 			//xRotation = TurnWithJoystick;
 			//Debug.Log($"Turn w/ joystick = {xRotation} --- mobileRightJoystick.Horizontal = {mobileRightJoystick.Horizontal}");
 			//xRotation = TurnWithArrows;
@@ -99,4 +179,7 @@ namespace UtiledPartlyaGame.Player
 		}
 	#endregion
 	}
+
+	/// <summary> This is the input system the player is currently using. </summary>
 }
+	public enum InputMethod{ Mobile, MouseAndKeyboard };

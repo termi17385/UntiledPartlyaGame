@@ -15,6 +15,7 @@ namespace UtiledPartlyaGame.Player
         /// <summary> The force of gravity applied to the character </summary>
         [SerializeField] private float gravityModifier = 1f;
         [SerializeField] private Joystick mobileLeftJoystick;
+        [SerializeField] private InputMethod inputMethod = InputMethod.MouseAndKeyboard;
         #endregion
         #region private Variables 
         /// <summary> The character controller attached to the player character's </summary>
@@ -30,15 +31,64 @@ namespace UtiledPartlyaGame.Player
         #region Start Update
         private void Start()
         {
+            FirstInputMethodCheck();
             // Sets playerChar to the CharacterController attached to the player
             playerChar = GetComponent<CharacterController>();
         }
         private void Update()
         {
+            CheckInputPlatform();
             if(!isDead) PlayerMovement();
             else if (isDead) PlayerSpectatorMode();
         }
         #endregion
+        #region InputMethodChecks
+
+            private void FirstInputMethodCheck()
+            {
+            #if UNITY_IOS || UNITY_ANDROID
+			    inputMethod = InputMethod.Mobile;
+			    TurnOnMobileInput();
+            #else
+                inputMethod = InputMethod.MouseAndKeyboard;
+                TurnOnMouseAndKeyboardInput();
+            #endif
+            }
+
+            /// <summary> Checks if player on a mobile platform </summary>
+            private void CheckInputPlatform()
+            {
+                InputMethod oldUsingPlatform = inputMethod;
+            #if UNITY_IOS || UNITY_ANDROID
+			    inputMethod = InputMethod.Mobile;
+            #else
+                inputMethod = InputMethod.MouseAndKeyboard;
+            #endif
+			
+                if(oldUsingPlatform != inputMethod)
+                {
+                    if(inputMethod == InputMethod.MouseAndKeyboard)
+                        TurnOnMouseAndKeyboardInput();
+                    if(inputMethod == InputMethod.Mobile)
+                        TurnOnMobileInput();
+                    else
+                        Debug.Log("No input system found!!");
+                }
+            }
+
+            private void TurnOnMobileInput()
+            {
+                // Turn on mobile joystick.
+                mobileLeftJoystick.gameObject.SetActive(true);
+            }
+
+            private void TurnOnMouseAndKeyboardInput()
+            {
+                // Turn off Mobile Joystick.
+                mobileLeftJoystick.gameObject.SetActive(false);
+            }
+        #endregion
+            
         #region Movement Types
         /// <summary> Basic spectator flight
         /// when the player dies </summary>
@@ -56,17 +106,32 @@ namespace UtiledPartlyaGame.Player
         /// and jumping of the player </summary>
         private void PlayerMovement()
         {
-            // these handle the input axis's
-               float h = Input.GetAxis("Horizontal") * speed;
-               float v = Input.GetAxis("Vertical") * speed;
-               
-               float hJoystick = mobileLeftJoystick.Horizontal * speed;
-               float vJoystick = mobileLeftJoystick.Vertical * speed;
-               
-               float horizontalMovement = h * h > hJoystick * hJoystick ? h : hJoystick;
-               float verticalMovement = v * v > vJoystick * vJoystick ? v : vJoystick;
-               
-               // handles the movement and rotation
+            float horizontalMovement = 0 * speed;
+            float verticalMovement = 0 * speed;
+
+            if(inputMethod == InputMethod.MouseAndKeyboard)
+            {
+               horizontalMovement = Input.GetAxis("Horizontal") * speed;
+               verticalMovement = Input.GetAxis("Vertical") * speed;
+            }
+            else if(inputMethod == InputMethod.Mobile)
+            {
+                if(mobileLeftJoystick.gameObject != null)
+                {
+                    if(mobileLeftJoystick.gameObject.active)
+                    {
+                        // these handle the input axis's
+                        horizontalMovement = mobileLeftJoystick.Horizontal * speed;
+                        verticalMovement = mobileLeftJoystick.Vertical * speed;
+                    }
+                }
+            }
+            else
+            {
+                Debug.Log("No input system found!!", gameObject);
+            }
+
+            // handles the movement and rotation
             //Vector3 vel = Quaternion.Euler(0, playerChar.transform.eulerAngles.y, 0) * new Vector3(horizontalMovement, 0, verticalMovement);
             Vector3 vel = Quaternion.Euler(0, playerChar.transform.eulerAngles.y, 0) * new Vector3(horizontalMovement, 0, verticalMovement);
             if(grounded) // checking if grounded
