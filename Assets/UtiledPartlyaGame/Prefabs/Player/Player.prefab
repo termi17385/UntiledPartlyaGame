@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 121483277}
   - component: {fileID: 121483276}
   m_Layer: 6
-  m_Name: Clock
+  m_Name: Lives
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -89,7 +89,7 @@ GameObject:
   - component: {fileID: 166584186}
   - component: {fileID: 166584185}
   m_Layer: 6
-  m_Name: Time
+  m_Name: Lives Count
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -142,7 +142,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 3
+  m_text: 0
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: dc36b3fdc14f47ebb36fd484a67e268a, type: 2}
   m_sharedMaterial: {fileID: 2140032, guid: dc36b3fdc14f47ebb36fd484a67e268a, type: 2}
@@ -611,7 +611,7 @@ GameObject:
   - component: {fileID: 1465043529}
   - component: {fileID: 1465043528}
   m_Layer: 6
-  m_Name: MatchStatus
+  m_Name: Title
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1992,7 +1992,6 @@ MonoBehaviour:
   listener: {fileID: 2961484670792021003}
   gunAudioSources:
   - {fileID: 6200388188831813805}
-  selfUI: {fileID: 0}
 --- !u!114 &8796314006860401468
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2013,7 +2012,9 @@ MonoBehaviour:
   health: 50
   playerColour: {r: 0, g: 0, b: 0, a: 0}
   playerName: 
+  playerLives: 0
   playerNameText: {fileID: 7424564760148159014}
+  playerLivesText: {fileID: 166584185}
   cachedMaterial: {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
   cachedMesh: {fileID: 3647854111901770600}
   cachedGunMesh: {fileID: 9189617276089365379}

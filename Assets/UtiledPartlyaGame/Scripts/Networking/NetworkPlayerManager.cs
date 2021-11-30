@@ -23,7 +23,9 @@ namespace UtiledPartlyaGame.Networking
 		[SyncVar(hook = nameof(OnHealthChange))] public float health;
 		[SyncVar(hook = nameof(OnSetColour))] public Color playerColour;
 		[SyncVar(hook = nameof(OnSetName))] public String playerName;
+		[SyncVar(hook = nameof(OnSetLives))] public int playerLives;
 		[SerializeField] private Text playerNameText;
+		[SerializeField] private TMP_Text playerLivesText;
 		[SerializeField] private Material cachedMaterial;
 		[SerializeField] private MeshRenderer cachedMesh;
 		[SerializeField] private MeshRenderer cachedGunMesh;
@@ -48,6 +50,7 @@ namespace UtiledPartlyaGame.Networking
 		public TMP_Text healthText;
 		
 		private const float MAX_HEALTH = 100;
+		private const int MAX_PLAYERLIVES = 3;
 		private MouseLook mLook;
 
 		private void Start()
@@ -57,6 +60,7 @@ namespace UtiledPartlyaGame.Networking
 				CmdSetColour();
 				CmdSetName();
 				CmdSetHealth();
+				CmdSetLives();
 			}
 
 			isDead = false;
@@ -135,11 +139,26 @@ namespace UtiledPartlyaGame.Networking
 		{
 			if(playerNameText == null)
 			{
-				Debug.LogWarning("PLEASE SET TEXTBOX TO CHANGE IN INSPECTOR!!! ---> cachedMaterial = " + playerNameText);
+				Debug.LogWarning("PLEASE SET TEXT BOX TO CHANGE IN INSPECTOR!!! ---> cachedMaterial = " + playerNameText);
 			}
 			else
 			{
 				playerNameText.text = _new;
+			}
+		}
+		private void OnSetLives(int _old, int _new)
+		{
+			if(playerNameText == null)
+			{
+				Debug.LogWarning("PLEASE SET TEXTBOX TO CHANGE IN INSPECTOR!!! ---> cachedMaterial = " + playerNameText);
+			}
+			else
+			{
+				if(_new <= 0)
+				{
+					Debug.Log("Player Died ---> " + gameObject, gameObject);
+				}
+				playerLivesText.text = _new.ToString();
 			}
 		}
 	
@@ -191,6 +210,9 @@ namespace UtiledPartlyaGame.Networking
 
 		[Command]
 		private void CmdSetHealth() => health = MAX_HEALTH;
+		
+		[Command]
+		private void CmdSetLives() => playerLives = MAX_PLAYERLIVES;
 		
 		private void Respawn()
 		{
