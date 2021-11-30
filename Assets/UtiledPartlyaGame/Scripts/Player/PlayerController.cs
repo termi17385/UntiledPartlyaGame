@@ -14,7 +14,7 @@ namespace UtiledPartlyaGame.Player
         [SerializeField] private float jumpSpeed = 15f;
         /// <summary> The force of gravity applied to the character </summary>
         [SerializeField] private float gravityModifier = 1f;
-        [SerializeField] private Joystick joystick;
+        [SerializeField] private Joystick mobileLeftJoystick;
         #endregion
         #region private Variables 
         /// <summary> The character controller attached to the player character's </summary>
@@ -60,8 +60,8 @@ namespace UtiledPartlyaGame.Player
                float h = Input.GetAxis("Horizontal") * speed;
                float v = Input.GetAxis("Vertical") * speed;
                
-               float hJoystick = joystick.Horizontal * speed;
-               float vJoystick = joystick.Vertical * speed;
+               float hJoystick = mobileLeftJoystick.Horizontal * speed;
+               float vJoystick = mobileLeftJoystick.Vertical * speed;
                
                float horizontalMovement = h * h > hJoystick * hJoystick ? h : hJoystick;
                float verticalMovement = v * v > vJoystick * vJoystick ? v : vJoystick;

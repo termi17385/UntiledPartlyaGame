@@ -5,8 +5,10 @@ namespace UtiledPartlyaGame.Player
 	public class MouseLook : MonoBehaviour
 	{
 		[SerializeField] private Transform head;
-		[SerializeField, Range(0, 500)] public float sensitivity = 300;
-		[SerializeField, Range(0, 500)] public float arrowSensitivity = 30f;
+		[SerializeField] private Joystick mobileRightJoystick;
+		[SerializeField, Range(0, 500)] public float sensitivity = 300f;
+		[SerializeField, Range(0, 500)] public float arrowSensitivity = 200f;
+		[SerializeField, Range(0, 500)] private float joystickSensitivity = 250f;
 		[SerializeField] private float minY = -60, maxY = 60;
 	
 		private float rotY;
@@ -69,9 +71,16 @@ namespace UtiledPartlyaGame.Player
 			float mouseX = Input.GetAxis("Mouse X") * sensitivity;
 			// We can add the Turning with Arrow To on screen arrows.
 			float TurnWithArrows = Input.GetAxis($"ArrowsTurning") * arrowSensitivity;
+			
+			float TurnWithJoystick = mobileRightJoystick.Horizontal * joystickSensitivity;
 
 			xRotation = mouseX * mouseX > TurnWithArrows * TurnWithArrows ? mouseX : TurnWithArrows;
 
+			if (mobileRightJoystick.Horizontal != 0)
+				xRotation = TurnWithJoystick;
+			
+			//xRotation = TurnWithJoystick;
+			//Debug.Log($"Turn w/ joystick = {xRotation} --- mobileRightJoystick.Horizontal = {mobileRightJoystick.Horizontal}");
 			//xRotation = TurnWithArrows;
 			//float keyboardX = Input.GetAxis() * sensitivity;
 			
