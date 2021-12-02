@@ -1911,9 +1911,11 @@ MonoBehaviour:
   gravityModifier: 2
   mobileLeftJoystick: {fileID: 738389833361698949}
   inputMethod: 1
+  printDebugs: 1
   isDead: 0
   hideObjects:
   - {fileID: 1528851855652737393}
+  - {fileID: 5673765455578535620}
 --- !u!114 &8122577237667580378
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1968,6 +1970,7 @@ MonoBehaviour:
   deathAnimationRun: 0
   isDead: 0
   objectsToHide:
+  - {fileID: 1528851855652737393}
   - {fileID: 1528851855652737393}
   componentsToHide:
   - {fileID: 4750774619237661996}

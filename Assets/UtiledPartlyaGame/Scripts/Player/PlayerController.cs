@@ -15,6 +15,7 @@ namespace UtiledPartlyaGame.Player
         [SerializeField] private float gravityModifier = 1f;
         [SerializeField] private Joystick mobileLeftJoystick;
         [SerializeField] private InputMethod inputMethod = InputMethod.MouseAndKeyboard;
+        [SerializeField, Tooltip("Turn on/off if you want to see debugs")] private bool printDebugs = true;
         #endregion
         #region private Variables 
         /// <summary> The character controller attached to the player character's </summary>
@@ -65,6 +66,7 @@ namespace UtiledPartlyaGame.Player
             {
                 // Turn off Mobile Joystick.
                 mobileLeftJoystick.gameObject.SetActive(false);
+                if (printDebugs) Debug.Log("Turn off Mobile Input");
             }
         #endregion
         #region Movement Types
@@ -73,14 +75,14 @@ namespace UtiledPartlyaGame.Player
         public void CmdSuperSpeedModeSetup()
         {
             speed = speed * 2;
-            Debug.Log($"Super speed mode. Speed = {speed}");
+            if (printDebugs) Debug.Log($"Super speed mode. Speed = {speed}");
         }
 
         /// <summary> Basic spectator flight
         /// when the player dies </summary>
         private void PlayerSpectatorMode()
         {
-            Debug.Log("You are dead -" + gameObject.name);
+            if (printDebugs) Debug.Log("You are dead -" + gameObject.name);
             // Turning this off because we will just turn off their player controller and rigidbody reset them, and turn them on again. ~ Kieran 10:13 Monday 29/11/21.
             // var h = Input.GetAxis("Horizontal") * (speed * 100) * Time.deltaTime;
             // var v = Input.GetAxis("Vertical") * (speed * 100) * Time.deltaTime;
@@ -115,7 +117,7 @@ namespace UtiledPartlyaGame.Player
             }
             else
             {
-                Debug.Log("No input system found!!", gameObject);
+                if (printDebugs) Debug.Log("No input system found!!", gameObject);
             }
 
             // handles the movement and rotation
