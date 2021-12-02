@@ -4833,7 +4833,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Match Settings
+  m_text: 'Map Settings
 
 '
   m_isRightToLeft: 0
