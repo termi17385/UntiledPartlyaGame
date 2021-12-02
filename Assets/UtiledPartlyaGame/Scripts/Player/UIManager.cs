@@ -59,7 +59,7 @@ namespace UtiledPartlyaGame.Player
                 case GameMode.SuperSpeed:
                     SuperspeedGameMode.gameObject.SetActive(true);
                     break;
-                case GameMode.OneShotOneKill:
+                case GameMode.InstantDeath:
                     InstantDeathGameMode.gameObject.SetActive(true);
                     break;
                 default:

@@ -22,8 +22,8 @@ namespace UtiledPartlyaGame
 
         public void ChooseNormalMatchSettings() => matchSetting = GameMode.Normal;
         public void ChooseSuperSpeedMatchSettings() => matchSetting = GameMode.SuperSpeed;
-        public void ChooseOneShotOneKillMatchSettings() => matchSetting = GameMode.OneShotOneKill;
+        public void ChooseOneShotOneKillMatchSettings() => matchSetting = GameMode.InstantDeath;
         public void SetMap(int _amt) => map0Or1 = _amt;
     }
-    public enum GameMode {Normal, SuperSpeed, OneShotOneKill };
+    public enum GameMode {Normal, SuperSpeed, InstantDeath };
 }
