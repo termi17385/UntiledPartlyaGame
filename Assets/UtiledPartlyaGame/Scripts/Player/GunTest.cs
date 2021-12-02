@@ -27,6 +27,7 @@ namespace UtiledPartlyaGame.Player
 		[SerializeField] private AudioSource gunSound, shootSound;
 		[SerializeField] private LayerMask ignorePlayer;
 		[SerializeField] private NetworkPlayerManager playerManager;
+		[SerializeField] public bool isDead;
 		private float nextFire;
 
 		[Header("Inspector")] [SerializeField,Tooltip("If you want to draw shooting Raycast in the Inspector")] private bool drawRay = false; 
@@ -40,6 +41,8 @@ namespace UtiledPartlyaGame.Player
 
 		private void Update()
 		{
+			if(isDead) return;
+			
 			Shoot();
 			if (drawRay)DrawRay();
 		}
@@ -124,7 +127,10 @@ namespace UtiledPartlyaGame.Player
 		public void CmdHitTarget(uint _id)
 		{
 			var getTarget = CustomNetworkManager.FindPlayer(_id).GetComponent<NetworkPlayerManager>();
+
 			getTarget.CmdTakeDamage(damage);
+			if (getTarget.health <=0)
+				getTarget.CmdKillPlayer();;
 		}
 	#endregion
 		

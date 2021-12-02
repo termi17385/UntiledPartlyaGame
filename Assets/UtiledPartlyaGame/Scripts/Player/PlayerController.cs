@@ -34,6 +34,7 @@ namespace UtiledPartlyaGame.Player
             // Sets playerChar to the CharacterController attached to the player
             playerChar = GetComponent<CharacterController>();
         }
+        
         private void Update()
         {
             //CheckInputPlatform();

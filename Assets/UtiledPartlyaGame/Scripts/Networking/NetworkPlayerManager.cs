@@ -33,8 +33,9 @@ namespace UtiledPartlyaGame.Networking
 		[SerializeField] private Material magentaMaterial;
 		[SerializeField] private Material grayMaterial;
 		[SerializeField] private Image backgroundImage;
+		[SerializeField] private bool deathAnimationRun;
 		[Space] [SyncVar(hook = nameof(OnPlayerKilled))] public bool isDead;
-		
+
 		[Header("Arrays of data to disable on death")]
 		[SerializeField] private GameObject[] objectsToHide;
 		[SerializeField] private Behaviour[] componentsToHide;
@@ -84,6 +85,7 @@ namespace UtiledPartlyaGame.Networking
 				CmdSetName();
 				CmdSetHealth();
 				SetupGameModeVariables(gameMode);
+				deathAnimationRun = false;
 				//CmdSetLives();
 			}
 
@@ -204,7 +206,16 @@ namespace UtiledPartlyaGame.Networking
 
 		private void Update()
 		{
-			if(isLocalPlayer) uiManager.DisplayStat(health, MAX_HEALTH, StatType.Health);
+			if(isLocalPlayer)
+			{
+				uiManager.DisplayStat(health, MAX_HEALTH, StatType.Health);
+
+				if(health <= 0 && !deathAnimationRun)
+				{
+					CmdKillPlayer();
+					deathAnimationRun = true;
+				}
+			}
 		}
 
 		// todo: this needs to be handled better and changed
@@ -223,11 +234,23 @@ namespace UtiledPartlyaGame.Networking
 
 		[Command(requiresAuthority = false)] public void CmdKillPlayer()
 		{
+			// foreach(var obj in objectsToHide) obj.SetActive(false);
+			// foreach(var comp in componentsToHide) comp.enabled = false;
+			// foreach(var col in colliders) col.enabled = false;
+			// cController.enabled = false;
+			// pController.isDead = true;
+			// GetComponent<GunTest>().isDead = true;
+			RpcKillPlayer();
+		}
+
+		[ClientRpc] public void RpcKillPlayer()
+		{
 			foreach(var obj in objectsToHide) obj.SetActive(false);
 			foreach(var comp in componentsToHide) comp.enabled = false;
 			foreach(var col in colliders) col.enabled = false;
 			cController.enabled = false;
 			pController.isDead = true;
+			GetComponent<GunTest>().isDead = true;
 		}
 		
 		// todo: when rigged models are obtained redo this method properly
@@ -294,6 +317,9 @@ namespace UtiledPartlyaGame.Networking
 		}
 
 		// todo: this needs to be handled better and changed
+		/// <summary> Damages the player. </summary>
+		/// <param name="_dmg"> How much damage. </param>
+		/// <returns>If player dies = true.</returns>
 		[Command(requiresAuthority = false)] public void CmdTakeDamage(float _dmg)
 		{
 			// if(isLocalPlayer)
@@ -303,7 +329,7 @@ namespace UtiledPartlyaGame.Networking
 
 				health -= _dmg;
 
-				print("Take Damgae health = " + health);
+				print("Take Damage health = " + health);
 				if(health <= 0)
 				{
 					health = 0;
