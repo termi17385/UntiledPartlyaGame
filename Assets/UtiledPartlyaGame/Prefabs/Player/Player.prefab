@@ -1887,7 +1887,7 @@ MonoBehaviour:
   mobileRightJoystick: {fileID: 6415452493276333576}
   sensitivity: 300
   arrowSensitivity: 200
-  joystickSensitivity: 67
+  joystickSensitivity: 167
   minY: -90
   maxY: 90
   inputMethod: 1
@@ -1904,9 +1904,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f198da4104bbb54990ee78cc283f2be, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
   speed: 10
   vSpeed: 0
-  jumpSpeed: 10
   gravityModifier: 2
   mobileLeftJoystick: {fileID: 738389833361698949}
   inputMethod: 1
@@ -1964,7 +1965,7 @@ MonoBehaviour:
   magentaMaterial: {fileID: 2100000, guid: b028a3bce607fd24ea4fcb42016d3169, type: 2}
   grayMaterial: {fileID: 2100000, guid: 0784aaeb94e0b714bbf70676917fc718, type: 2}
   backgroundImage: {fileID: 1552346301}
-  stamina: 25
+  deathAnimationRun: 0
   isDead: 0
   objectsToHide:
   - {fileID: 1528851855652737393}
@@ -2021,6 +2022,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 191
   playerManager: {fileID: 8796314006860401468}
+  isDead: 0
+  drawRay: 0
+  mobileShootVariable: 0.5
 --- !u!114 &454899889702782190
 MonoBehaviour:
   m_ObjectHideFlags: 0

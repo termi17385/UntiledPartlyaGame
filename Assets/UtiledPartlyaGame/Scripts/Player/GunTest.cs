@@ -30,7 +30,8 @@ namespace UtiledPartlyaGame.Player
 		[SerializeField] public bool isDead;
 		private float nextFire;
 
-		[Header("Inspector")] [SerializeField,Tooltip("If you want to draw shooting Raycast in the Inspector")] private bool drawRay = false; 
+		[Header("Inspector")] [SerializeField,Tooltip("If you want to draw shooting Raycast in the Inspector")] private bool drawRay = false;
+		[SerializeField] private float mobileShootVariable = 0.5f;
 
 	#region StartUpdate
 		private void Start()
@@ -93,7 +94,7 @@ namespace UtiledPartlyaGame.Player
 				}
 				else if(inputMethod == InputMethod.Mobile)
 				{
-					if(Math.Abs(mobileRightJoystick.Vertical) > 0.3f)
+					if(Math.Abs(mobileRightJoystick.Vertical) > mobileShootVariable)
 						FireGun();
 				}
 			}
