@@ -33,9 +33,6 @@ namespace UtiledPartlyaGame.Networking
 		[SerializeField] private Material magentaMaterial;
 		[SerializeField] private Material grayMaterial;
 		[SerializeField] private Image backgroundImage;
-		
-		public float stamina;
-		
 		[Space] [SyncVar(hook = nameof(OnPlayerKilled))] public bool isDead;
 		
 		[Header("Arrays of data to disable on death")]
@@ -86,6 +83,7 @@ namespace UtiledPartlyaGame.Networking
 				CmdSetColour();
 				CmdSetName();
 				CmdSetHealth();
+				SetupGameModeVariables(gameMode);
 				//CmdSetLives();
 			}
 
@@ -102,6 +100,24 @@ namespace UtiledPartlyaGame.Networking
 			else if (!isLocalPlayer)
 			{
 				uiManager.enabled = false;
+			}
+		}
+
+		private void SetupGameModeVariables(GameMode _gameMode)
+		{
+			Debug.Log($"gamemode is {_gameMode}");
+			switch(_gameMode)
+			{
+				case GameMode.Normal:
+					break;
+				case GameMode.SuperSpeed:
+					GetComponent<PlayerController>().CmdSuperSpeedModeSetup();
+					break;
+				case GameMode.InstantDeath:
+					//InstantDeathGameMode.gameObject.SetActive(true);
+					break;
+				default:
+					break;
 			}
 		}
 
@@ -125,7 +141,6 @@ namespace UtiledPartlyaGame.Networking
 			// This is how you convert the Json back to a data type.
 			// The Generic is requited for making sure the returnded data is the same as the passed in.
 			gameData = JsonUtility.FromJson<SaveObject>(json);
-			Debug.Log(gameData.playerName);
 			playerName = gameData.playerName;
 		}
 
@@ -140,21 +155,18 @@ namespace UtiledPartlyaGame.Networking
 				Debug.Log(_new);
 				if(_new == Color.magenta)
 				{
-					Debug.Log("colour = Magenta");
 					//cachedMaterial = magentaMaterial;
 					cachedMesh.material = magentaMaterial;
 					cachedGunMesh.material = magentaMaterial;
 				}
 				else if(_new == Color.gray)
 				{
-					Debug.Log("colour = gray");
 					// cachedMaterial = grayMaterial;
 					cachedMesh.material = grayMaterial;
 					cachedGunMesh.material = grayMaterial;
 				}
 				if(_new == Color.cyan)
 				{
-					Debug.Log("colour = cyan");
 					//cachedMaterial = cyanMaterial;
 					cachedMesh.material = cyanMaterial;
 					cachedGunMesh.material = cyanMaterial;

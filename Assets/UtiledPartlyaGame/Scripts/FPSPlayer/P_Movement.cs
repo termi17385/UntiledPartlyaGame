@@ -1,9 +1,10 @@
+using Mirror;
 using System.Collections;
 using UnityEngine;
 
 namespace UtiledPartlyaGame.FPSPlayer
 {
-    public class P_Movement : MonoBehaviour
+    public class P_Movement : NetworkBehaviour
     {
         public float moveSpeed = 9f, sensitivity = 100f;
         private float horizontalInput, verticalInput;

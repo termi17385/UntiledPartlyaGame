@@ -1,17 +1,16 @@
+using Mirror;
 using System;
 using UnityEngine;
 
 namespace UtiledPartlyaGame.Player
 {
     [RequireComponent(typeof(CharacterController))]
-    public class PlayerController : MonoBehaviour
+    public class PlayerController : NetworkBehaviour
     {
         #region Main Variables
         /// <summary> The speed of character movement </summary>
         [Header("Main Variables"), SerializeField] private float speed = 10f;
         [SerializeField] private float vSpeed = 0;
-        /// <summary> Speed of the jump </summary>
-        [SerializeField] private float jumpSpeed = 15f;
         /// <summary> The force of gravity applied to the character </summary>
         [SerializeField] private float gravityModifier = 1f;
         [SerializeField] private Joystick mobileLeftJoystick;
@@ -68,6 +67,14 @@ namespace UtiledPartlyaGame.Player
             }
         #endregion
         #region Movement Types
+        /// <summary> Setting up Super Speed Mode. </summary>
+        [Command(requiresAuthority = false)]
+        public void CmdSuperSpeedModeSetup()
+        {
+            speed = speed * 2;
+            Debug.Log($"Super speed mode. Speed = {speed}");
+        }
+
         /// <summary> Basic spectator flight
         /// when the player dies </summary>
         private void PlayerSpectatorMode()
@@ -80,6 +87,7 @@ namespace UtiledPartlyaGame.Player
             // transform.position += (transform.forward * v * Time.deltaTime);
             // transform.position += (transform.right * h * Time.deltaTime);
         }
+
         /// <summary> Handles the movement
         /// and jumping of the player </summary>
         private void PlayerMovement()
