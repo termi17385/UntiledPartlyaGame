@@ -29,6 +29,9 @@ namespace UtiledPartlyaGame.Player
 		[SerializeField] private NetworkPlayerManager playerManager;
 		private float nextFire;
 
+		[Header("Inspector")] [SerializeField,Tooltip("If you want to draw shooting Raycast in the Inspector")] private bool drawRay = false; 
+
+	#region StartUpdate
 		private void Start()
 		{
 			CheckInputPlatform();
@@ -38,9 +41,11 @@ namespace UtiledPartlyaGame.Player
 		private void Update()
 		{
 			Shoot();
-			DrawRay();
+			if (drawRay)DrawRay();
 		}
+		#endregion
 
+			
 		private void DrawRay()
 		{
 			Vector3 rayOrigin = cam.ViewportToWorldPoint(new Vector3(.5f, .5f, 0));
@@ -58,6 +63,14 @@ namespace UtiledPartlyaGame.Player
 		#endif
 		}
 	#endregion
+	#region Shooting
+
+		/// <summary> Setting up Instant Kill Mode. </summary>
+		[Command(requiresAuthority = false)]
+		public void CmdInstantDeath(int _maxHealth)
+		{
+			damage = _maxHealth;
+		}
 		
 		public void Shoot()
 		{
@@ -113,5 +126,7 @@ namespace UtiledPartlyaGame.Player
 			var getTarget = CustomNetworkManager.FindPlayer(_id).GetComponent<NetworkPlayerManager>();
 			getTarget.CmdTakeDamage(damage);
 		}
+	#endregion
+		
 	}
 }

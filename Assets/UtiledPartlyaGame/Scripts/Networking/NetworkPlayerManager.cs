@@ -114,7 +114,7 @@ namespace UtiledPartlyaGame.Networking
 					GetComponent<PlayerController>().CmdSuperSpeedModeSetup();
 					break;
 				case GameMode.InstantDeath:
-					//InstantDeathGameMode.gameObject.SetActive(true);
+					GetComponent<GunTest>().CmdInstantDeath(100);
 					break;
 				default:
 					break;
@@ -220,6 +220,15 @@ namespace UtiledPartlyaGame.Networking
 			if (isLocalPlayer)
 				CmdUpdateHealth(_new);
 		}
+
+		[Command(requiresAuthority = false)] public void CmdKillPlayer()
+		{
+			foreach(var obj in objectsToHide) obj.SetActive(false);
+			foreach(var comp in componentsToHide) comp.enabled = false;
+			foreach(var col in colliders) col.enabled = false;
+			cController.enabled = false;
+			pController.isDead = true;
+		}
 		
 		// todo: when rigged models are obtained redo this method properly
 		private void OnPlayerKilled(bool _old, bool _new)
@@ -280,7 +289,7 @@ namespace UtiledPartlyaGame.Networking
 			if(health <= 0)
 			{
 				health = 0;
-				isDead = true;
+				//isDead = true;
 			}
 		}
 
@@ -294,10 +303,12 @@ namespace UtiledPartlyaGame.Networking
 
 				health -= _dmg;
 
+				print("Take Damgae health = " + health);
 				if(health <= 0)
 				{
 					health = 0;
-					CmdPlayerStatus(true);
+					CmdKillPlayer();
+					//CmdPlayerStatus(true);
 				}
 			}
 		}
