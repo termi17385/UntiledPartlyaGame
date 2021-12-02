@@ -7,14 +7,14 @@ namespace UtiledPartlyaGame
 {
     public class SettingsManager : MonoBehaviour
     {
-        [SerializeField] private TextMeshProUGUI displayLives;
+        [SerializeField] private TextMeshProUGUI displayMatchSettings;
         [SerializeField] private TextMeshProUGUI displayMap;
         // Update is called once per frame
         void Update()
         {
             if(GameManager.instance != null)
             {
-                displayLives.text = $"Lives: {GameManager.instance.PlayerLives}";
+                displayMatchSettings.text = GameManager.instance.MatchSettings.ToString();
 
                 if(GameManager.instance.GameMap == 0)
                 {
@@ -28,7 +28,7 @@ namespace UtiledPartlyaGame
             else
             {
                 displayMap.text = $"Map 1";
-                displayLives.text = $"Lives: 1";
+                displayMatchSettings.text = $"Lives: 1";
             }
         }
     }
