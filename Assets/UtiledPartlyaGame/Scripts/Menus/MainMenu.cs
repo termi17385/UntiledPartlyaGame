@@ -10,15 +10,23 @@ namespace UtiledPartlyaGame.Menus
         // Streaming  assets is a folder that Unity creates that we can use.
         // To load/save data in, in the Editor it is in the project folder,
         // in a build, it is in the .exe's build folder
-        private string FilePath => Application.streamingAssetsPath + "/gameData";
+        
+        //private string FilePath => Application.streamingAssetsPath + "/gameData";
+        private string FilePath;
+
         
         [SerializeField] private SaveObject jsonToSave;
 
         private void OnEnable()
         {
-            if (!Directory.Exists(Application.streamingAssetsPath))
+        #if UNITY_IOS || UNITY_ANDROID
+            FilePath = Application.persistentDataPath + "/gameData";
+        #else
+            FilePath = Application.streamingAssetsPath + "/gameData";
+        #endif
+            if (!Directory.Exists(FilePath))
             {
-                Directory.CreateDirectory(Application.streamingAssetsPath);
+                Directory.CreateDirectory(FilePath);
             }
         }
 

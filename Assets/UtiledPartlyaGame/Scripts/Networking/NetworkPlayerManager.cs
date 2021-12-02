@@ -17,7 +17,7 @@ namespace UtiledPartlyaGame.Networking
 		// Streaming  assets is a folder that Unity creates that we can use.
 		// To load/save data in, in the Editor it is in the project folder,
 		// in a build, it is in the .exe's build folder
-		private string FilePath => Application.streamingAssetsPath + "/gameData";
+		private string FilePath;
 		[SerializeField] private SaveObject gameData = new SaveObject();
 		[Header("Player Stats")]
 		[SyncVar(hook = nameof(OnHealthChange))] public float health;
@@ -55,6 +55,12 @@ namespace UtiledPartlyaGame.Networking
 
 		private void Start()
 		{
+		#if UNITY_IOS || UNITY_ANDROID
+            FilePath = Application.persistentDataPath + "/gameData";
+		#else
+			FilePath = Application.streamingAssetsPath + "/gameData";
+		#endif
+			
 			if(isServer)
 			{
 				if(isLocalPlayer)
