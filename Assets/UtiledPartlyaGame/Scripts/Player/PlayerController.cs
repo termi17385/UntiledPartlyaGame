@@ -51,6 +51,7 @@ namespace UtiledPartlyaGame.Player
 			    inputMethod = InputMethod.Mobile;
 			    TurnOnMobileInput();
             #else
+                if (printDebugs) Debug.Log("Turn off Mobile Input");
                 inputMethod = InputMethod.MouseAndKeyboard;
                 TurnOnMouseAndKeyboardInput();
             #endif
