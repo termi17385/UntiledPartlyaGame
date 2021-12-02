@@ -1,5 +1,4 @@
 using Mirror;
-using System;
 using UnityEngine;
 
 namespace UtiledPartlyaGame.Player
@@ -10,6 +9,7 @@ namespace UtiledPartlyaGame.Player
         #region Main Variables
         /// <summary> The speed of character movement </summary>
         [Header("Main Variables"), SerializeField] private float speed = 10f;
+        [SerializeField] private float superSpeed = 2.8f;
         [SerializeField] private float vSpeed = 0;
         /// <summary> The force of gravity applied to the character </summary>
         [SerializeField] private float gravityModifier = 1f;
@@ -31,7 +31,6 @@ namespace UtiledPartlyaGame.Player
         #region Start Update
         private void Start()
         {
-            FirstInputMethodCheck();
             // Sets playerChar to the CharacterController attached to the player
             playerChar = GetComponent<CharacterController>();
         }
@@ -44,8 +43,7 @@ namespace UtiledPartlyaGame.Player
         }
         #endregion
         #region InputMethodChecks
-
-            private void FirstInputMethodCheck()
+            public void FirstInputMethodCheck()
             {
             #if UNITY_IOS || UNITY_ANDROID
 			    inputMethod = InputMethod.Mobile;
@@ -53,21 +51,22 @@ namespace UtiledPartlyaGame.Player
             #else
                 if (printDebugs) Debug.Log("Turn off Mobile Input");
                 inputMethod = InputMethod.MouseAndKeyboard;
-                TurnOnMouseAndKeyboardInput();
+                CmdTurnOnMouseAndKeyboard();
             #endif
             }
 
+            /// <summary> Turn on mobile joystick. </summary>
             private void TurnOnMobileInput()
             {
-                // Turn on mobile joystick.
                 mobileLeftJoystick.gameObject.SetActive(true);
             }
 
-            private void TurnOnMouseAndKeyboardInput()
+
+            [Command] private void CmdTurnOnMouseAndKeyboard()
             {
                 // Turn off Mobile Joystick.
                 mobileLeftJoystick.gameObject.SetActive(false);
-                if (printDebugs) Debug.Log("Turn off Mobile Input");
+                if(printDebugs) Debug.Log("Turn off Mobile Input");
             }
         #endregion
         #region Movement Types
@@ -75,7 +74,7 @@ namespace UtiledPartlyaGame.Player
         [Command(requiresAuthority = false)]
         public void CmdSuperSpeedModeSetup()
         {
-            speed = speed * 2;
+            speed = speed * superSpeed;
             if (printDebugs) Debug.Log($"Super speed mode. Speed = {speed}");
         }
 
@@ -87,13 +86,13 @@ namespace UtiledPartlyaGame.Player
             // Turning this off because we will just turn off their player controller and rigidbody reset them, and turn them on again. ~ Kieran 10:13 Monday 29/11/21.
             // var h = Input.GetAxis("Horizontal") * (speed * 100) * Time.deltaTime;
             // var v = Input.GetAxis("Vertical") * (speed * 100) * Time.deltaTime;
-            //
             // transform.position += (transform.forward * v * Time.deltaTime);
             // transform.position += (transform.right * h * Time.deltaTime);
         }
 
-        /// <summary> Handles the movement
-        /// and jumping of the player </summary>
+        /// <summary>
+        /// Handles the movement and jumping of the player.
+        /// </summary>
         private void PlayerMovement()
         {
             float horizontalMovement = 0 * speed;

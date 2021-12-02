@@ -38,8 +38,7 @@ namespace UtiledPartlyaGame.FPSPlayer
             var camRotation = Camera.main.transform.rotation;
             camX = -Input.GetAxis("Mouse Y") * sensitivity * Time.deltaTime;
            
-            #endregion   
-        
+            #endregion
             #region MovementControl
             //cardinal directions
             forwardVector = Player.transform.forward * slidePower * verticalInput * moveSpeed;
@@ -69,7 +68,6 @@ namespace UtiledPartlyaGame.FPSPlayer
             }
             #endregion
             #endregion
-
             #region CameraControl
             //rotates player based on camera
             rb.transform.Rotate(0, Input.GetAxis("Mouse X") * sensitivity * Time.deltaTime, 0);

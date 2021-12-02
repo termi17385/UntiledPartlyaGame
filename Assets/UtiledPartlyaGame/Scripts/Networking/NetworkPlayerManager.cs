@@ -88,7 +88,8 @@ namespace UtiledPartlyaGame.Networking
 			if(isLocalPlayer)
 			{
 				CmdSetColour();
-				CmdSetName();
+				PlayerController pc = gameObject.GetComponent<PlayerController>();
+				pc.FirstInputMethodCheck();
 				CmdSetHealth();
 				SetupGameModeVariables(gameMode);
 				deathAnimationRun = false;
@@ -101,6 +102,7 @@ namespace UtiledPartlyaGame.Networking
 			{
 				cController = GetComponent<CharacterController>();
 				mLook = GetComponent<MouseLook>();
+				
 				
 				uiManager.DisplayStat(health, MAX_HEALTH, StatType.Health);
 				uiManager.DisplayGameMode(gameMode);

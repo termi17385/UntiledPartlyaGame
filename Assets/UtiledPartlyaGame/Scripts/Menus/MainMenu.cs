@@ -13,10 +13,9 @@ namespace UtiledPartlyaGame.Menus
         
         //private string FilePath => Application.streamingAssetsPath + "/gameData";
         private string FilePath;
-
         
         [SerializeField] private SaveObject jsonToSave;
-
+        
         private void OnEnable()
         {
         #if UNITY_IOS || UNITY_ANDROID
