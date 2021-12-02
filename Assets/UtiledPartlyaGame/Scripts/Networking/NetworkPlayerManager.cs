@@ -23,7 +23,7 @@ namespace UtiledPartlyaGame.Networking
 		[SyncVar(hook = nameof(OnHealthChange))] public float health;
 		[SyncVar(hook = nameof(OnSetColour))] public Color playerColour;
 		[SyncVar(hook = nameof(OnSetName))] public String playerName;
-		[SyncVar(hook = nameof(OnSetLives))] public int playerLives;
+		[SerializeField, SyncVar] private GameMode gameMode;
 		[SerializeField] private Text playerNameText;
 		[SerializeField] private TMP_Text playerLivesText;
 		[SerializeField] private Material cachedMaterial;
@@ -52,15 +52,41 @@ namespace UtiledPartlyaGame.Networking
 		private const float MAX_HEALTH = 100;
 		private const int MAX_PLAYERLIVES = 3;
 		private MouseLook mLook;
+		
+		[SerializeField, SyncVar]private bool masterPlayer;
 
 		private void Start()
 		{
+			if(isServer)
+			{
+				if(isLocalPlayer)
+				{
+					gameMode = GameManager.instance.MatchSettings;
+					masterPlayer = this;
+				}
+			}
+			else
+			{
+				if(isLocalPlayer)
+				{
+					var players = FindObjectsOfType<NetworkPlayerManager>();
+					foreach(var nPlayer in players)
+					{
+						if(nPlayer.masterPlayer)
+						{
+							gameMode = nPlayer.gameMode;
+							break;
+						}
+					}
+				}
+			}
+			
 			if(isLocalPlayer)
 			{
 				CmdSetColour();
 				CmdSetName();
 				CmdSetHealth();
-				CmdSetLives();
+				//CmdSetLives();
 			}
 
 			isDead = false;
@@ -71,6 +97,7 @@ namespace UtiledPartlyaGame.Networking
 				mLook = GetComponent<MouseLook>();
 				
 				uiManager.DisplayStat(health, MAX_HEALTH, StatType.Health);
+				uiManager.DisplayGameMode(gameMode);
 			}
 			else if (!isLocalPlayer)
 			{
@@ -210,9 +237,9 @@ namespace UtiledPartlyaGame.Networking
 
 		[Command]
 		private void CmdSetHealth() => health = MAX_HEALTH;
-		
-		[Command]
-		private void CmdSetLives() => playerLives = MAX_PLAYERLIVES;
+		//
+		// [Command]
+		// private void CmdSetLives() => playerLives = MAX_PLAYERLIVES;
 		
 		private void Respawn()
 		{

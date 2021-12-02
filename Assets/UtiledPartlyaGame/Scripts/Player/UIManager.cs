@@ -11,11 +11,13 @@ namespace UtiledPartlyaGame.Player
     {
         [Header("UI IMAGE ELEMENTS")]
         [SerializeField] private Image barHealth;
-        [SerializeField] private Image barStamina, barAmmo, clock;
+        [SerializeField] private Image NormalGameMode;
+        [SerializeField] private Image SuperspeedGameMode;
+        [SerializeField] private Image InstantDeathGameMode;
 
         [Header("UI TEXT ELEMENTS")]
         [SerializeField] private TextMeshProUGUI textHealth;
-        [SerializeField] private TextMeshProUGUI textStamina, textAmmo, textTime, textMatchStatus;
+        [SerializeField] private TextMeshProUGUI textMatchStatus;
     
         // Methods for handling the bars
         // Methods for handling the Text
@@ -35,8 +37,6 @@ namespace UtiledPartlyaGame.Player
             switch(_statType)
             {
                 case StatType.Health:  text = textHealth; image = barHealth; break;
-                case StatType.Stamina: text = textStamina; image = barStamina; break;
-                case StatType.Ammo:    text = textAmmo; image = barAmmo; break;
                 default:               throw new ArgumentOutOfRangeException(nameof(_statType), _statType, null);
             }
         
@@ -47,6 +47,25 @@ namespace UtiledPartlyaGame.Player
             var clampedVal = Mathf.Clamp01(_val / _maxVal);
             text.text = $"{_val}/{_maxVal}";
             image.fillAmount = clampedVal;
+        }
+
+        public void DisplayGameMode(GameMode _gameMode)
+        {
+            switch(_gameMode)
+            {
+                case GameMode.Normal:
+                    NormalGameMode.gameObject.SetActive(true);
+                    break;
+                case GameMode.SuperSpeed:
+                    SuperspeedGameMode.gameObject.SetActive(true);
+                    break;
+                case GameMode.OneShotOneKill:
+                    InstantDeathGameMode.gameObject.SetActive(true);
+                    break;
+                default:
+                    NormalGameMode.gameObject.SetActive(true);
+                    break;
+            }
         }
     }
 }
@@ -61,7 +80,5 @@ public enum MatchStatus
 
 public enum StatType
 {
-    Health,
-    Stamina,
-    Ammo
+    Health
 }
